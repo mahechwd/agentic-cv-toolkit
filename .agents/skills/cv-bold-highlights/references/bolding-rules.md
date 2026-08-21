@@ -30,8 +30,9 @@
 - Visible wording, punctuation, order, and whitespace-normalised text must remain identical before and after.
 - Bold only existing, truthful content; do not introduce a keyword or metric.
 - Keep LaTeX escapes inside the bold command.
-- Re-render after formatting because bold glyphs can change line wrapping even when visible character count is unchanged.
-- Preserve each selected bullet's original rendered line count and the CV's page count. Never leave a bullet above two rendered lines; remove lower-priority emphasis when needed.
+- Re-render after formatting when a renderer is already available because bold glyphs can change line wrapping even when visible character count is unchanged.
+- When rendered verification is available, preserve each selected bullet's original line count and the CV's page count by removing lower-priority emphasis when needed.
+- A LaTeX installation is optional for semantic bolding. Without one, apply the selected emphasis, report wrapping as unverified, and let the user review it in Overleaf; never require or recommend installing MacTeX solely for this skill.
 - Direct edits may change only existing `\resumeItem{...}` contents in the selected block. Do not create draft or preview files.
 
 ## Guidance basis

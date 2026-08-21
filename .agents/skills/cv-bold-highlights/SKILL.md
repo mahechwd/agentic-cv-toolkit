@@ -1,6 +1,6 @@
 ---
 name: cv-bold-highlights
-description: Directly add sparse LaTeX textbf emphasis to one named CV bullet block's most important existing metrics and supported technologies without changing visible wording or rendered line count. Edits only existing resumeItem contents in the selected CV block.
+description: Directly add sparse LaTeX textbf emphasis to one named CV bullet block's most important existing metrics, mechanisms, and supported technologies without changing visible wording. Edits only existing resumeItem contents in the selected CV block and does not require a LaTeX installation.
 ---
 
 # CV bold highlights
@@ -12,7 +12,7 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 - Identify the exact CV path, kind (`experience` or `project`), and target name. Run `python3 scripts/cv_drafts.py list <cv-path>` and require one exact target.
 - Read [references/bolding-rules.md](references/bolding-rules.md) completely before editing.
 - Read the exact selected block and record its original `\resumeItem{...}` contents, bullet count, visible wording, character counts, and surrounding source.
-- Compile the current CV into an operating-system temporary directory and record each selected bullet's rendered line count and total page count. Stop before editing when rendering is unavailable.
+- When a LaTeX renderer is already available, optionally compile the current CV into an operating-system temporary directory and record selected line counts and page count. Do not require or recommend installing a LaTeX distribution solely for bolding.
 - Never edit tracked example CVs with personal content.
 
 ## Choose highlights
@@ -35,11 +35,12 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 ## Verify
 
 1. Rerun `python3 scripts/cv_drafts.py list <cv-path>` and `python3 scripts/cv_tex.py <cv-path>` after editing. Compare every selected bullet's rendered text with the recorded baseline; it must be identical.
-2. Compile the edited CV into an operating-system temporary directory and inspect it. Every selected bullet must retain its original rendered line count, the CV must retain its page count, and no bullet may exceed two rendered lines.
-3. If bolding creates a new wrap or page overflow, remove the lower-priority highlight rather than rewriting content. Leave a bullet unbolded when no highlight fits safely.
+2. When a renderer is already available, compile the edited CV into an operating-system temporary directory and inspect it. Every selected bullet should retain its original rendered line count and the CV should retain its page count.
+3. When rendering shows a new wrap or page overflow, remove the lower-priority highlight rather than rewriting content. Leave a bullet unbolded when no highlight fits safely.
 4. Confirm LaTeX is balanced and no content outside the selected `\resumeItem{...}` bodies changed.
 5. If verification still fails after removing unsafe highlights, restore the original selected bullet contents if the block has not changed independently and report the conflict.
+6. When rendering is unavailable, complete the direct semantic bolding, state that wrapping was not locally verified, and tell the user to review the result in Overleaf. Do not suggest installing MacTeX for this skill.
 
 ## Report
 
-List the CV path and target; each applied bold span and why it is scan-worthy; confirmation that visible wording, bullet count, rendered line counts, and page count are unchanged; and any bullet deliberately left unbolded. State that the named CV block was updated directly and can be revised again after the user reviews `main.tex`.
+List the CV path and target; each applied bold span and why it is scan-worthy; confirmation that visible wording and bullet count are unchanged; optional rendered line-count and page-count results when available; and any bullet deliberately left unbolded. State that the named CV block was updated directly and can be revised again after the user reviews `main.tex` or Overleaf.

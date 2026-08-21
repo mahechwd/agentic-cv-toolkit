@@ -241,7 +241,7 @@ Supported equivalents and keywords may be proposed only when the relevant eviden
 Use $cv-bold-highlights on main.tex for experience "Example Company" and update the selected bullets directly.
 ```
 
-This stage may add forms such as `\textbf{10M+ organisations}`, `\textbf{parallelized Camunda workflows}`, or `\textbf{Elasticsearch}` while keeping visible wording identical. It uses a variable zero-to-three spans per bullet, permits a fourth only when each span adds a distinct signal, and leaves low-signal bullets unbolded. The skill edits only the selected `\resumeItem{...}` contents, compiles the CV using temporary output, and removes lower-priority emphasis if bold glyphs change line wrapping or page count. It does not create a JSON draft, preview TeX file, or approval step. Review the direct result in `main.tex` and request another revision if needed.
+This stage may add forms such as `\textbf{10M+ organisations}`, `\textbf{parallelized Camunda workflows}`, or `\textbf{Elasticsearch}` while keeping visible wording identical. It uses a variable zero-to-three spans per bullet, permits a fourth only when each span adds a distinct signal, and leaves low-signal bullets unbolded. The skill edits only the selected `\resumeItem{...}` contents and does not create a JSON draft, preview TeX file, or approval step. A LaTeX installation is optional: when a renderer already exists, the skill checks wrapping with temporary output; otherwise it completes the semantic bolding and asks you to review wrapping in Overleaf. You do not need to install MacTeX for this skill.
 
 ## Deterministic checks
 
