@@ -18,9 +18,11 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 ## Choose highlights
 
 1. Read each bullet as a recruiter scanning for outcome, scale, and technical fit.
-2. Select the smallest meaningful span, prioritising:
-   - a decision-relevant metric or measured outcome; then
-   - one supported technology, framework, method, or system term central to the achievement.
+2. Select semantic anchors rather than enforcing a per-bullet quota, prioritising:
+   - a decision-relevant metric with its meaningful unit or scale noun;
+   - a differentiating mechanism, architecture, or delivered capability;
+   - a supported technology, framework, method, or system term central to the achievement; and
+   - a concise external validation signal such as an award when it materially strengthens the bullet.
 3. Apply every rule in `references/bolding-rules.md`.
 4. Do not change, add, remove, reorder, or re-punctuate visible wording.
 
