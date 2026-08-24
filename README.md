@@ -1,218 +1,164 @@
 # Codex CV Toolkit
 
-A privacy-conscious toolkit for building and tailoring a LaTeX software-engineering CV with repository-scoped Codex skills.
+A privacy-conscious toolkit for building, fitting, tailoring, highlighting, and scoring a LaTeX software-engineering CV with repository-scoped Codex skills.
 
-The central rule is simple:
+## The three folders that matter
 
 ```text
-facts or optional evidence → direct \resumeItem edit → review main.tex → request another revision
+templates/       tracked starter files; never put personal information here
+workspace/       ignored working files; keep your real CV, vacancy, and evidence here
+applications/    ignored job-specific CV copies created by the tailoring workflow
 ```
 
-`$cv-build-bullets`, `$cv-fit-bullets`, and `$cv-bold-highlights` edit one named Experience or Projects block immediately and may replace only the contents of its existing `\resumeItem{...}` commands. Tailoring may still create previews and apply its own reviewed result; there is no separate apply skill.
+This separation is intentional. Files under `templates/` belong to the toolkit and appear in Git. Files under `workspace/` and `applications/` belong to you and are ignored.
 
-## Start here: where your content goes
+## Quick start
 
-Run this once after cloning:
+Run once after cloning:
 
 ```bash
 python3 scripts/setup_workspace.py
 ```
 
-It creates the following ignored private inputs when they are missing and never overwrites files that already exist:
-
-| Private input | What you put there |
-|---|---|
-| `main.tex` | Paste your complete LaTeX CV, including its existing Experience and Projects headings and `\resumeItem{...}` slots |
-| `job-description.txt` | Paste one complete job description, replacing all previous placeholder or vacancy text |
-| `cv-context/experience/<company-slug>/` | Optionally add `.md`, `.txt`, and `.pdf` evidence for that employment entry |
-| `cv-context/projects/<project-slug>/` | Optionally add `.md`, `.txt`, and `.pdf` evidence for that project |
-
-Then open the repository root in Codex and invoke the appropriate skill. For example:
+The command creates this ignored private workspace without overwriting anything:
 
 ```text
-Use $cv-build-bullets on main.tex for experience "Example Company". Read its cv-context folder and update only its resumeItem contents now.
+workspace/
+├── main.tex
+├── job-description.txt
+└── context/
+    ├── experience/example-company/evidence.md
+    └── projects/example-project/evidence.md
 ```
 
-`main.example.tex`, `job-description.example.txt`, and `cv-context.example/` are tracked public templates used to initialise a new clone. Do not paste personal information into them, and do not delete them during normal use. Because they are tracked, deleting one correctly appears in Git as an uncommitted deletion. Restore an accidental deletion with:
+Then:
 
-```bash
-git restore main.example.tex job-description.example.txt cv-context.example
-```
+1. Paste your complete LaTeX CV into `workspace/main.tex`.
+2. Paste one complete vacancy into `workspace/job-description.txt`.
+3. Optionally add factual notes or supporting files under the matching `workspace/context/experience/` or `workspace/context/projects/` folder.
+4. Open the repository root in Codex so it discovers `AGENTS.md` and `.agents/skills/`.
 
-New untracked files accidentally placed under `cv-context.example/` are ignored as a privacy backstop, but the correct location for all real evidence remains `cv-context/experience/<company-slug>/` or `cv-context/projects/<project-slug>/`.
-
-If you already created `main.tex`, `job-description.txt`, or `cv-context/`, the setup command prints `kept existing` and leaves their contents untouched.
-
-## What is included
-
-| Skill | Purpose | Output |
-|---|---|---|
-| `$cv-build-bullets` | Rewrite pasted bullets or directly fill/strengthen a named CV block using recruiter-readable, technically credible XYZ claims | Chat proposal or updated CV block |
-| `$cv-fit-bullets` | Compress, expand, or visually balance one named block | Updated CV block |
-| `$cv-tailor-bullets` | Add only job-relevant terms supported by evidence | Draft JSON + preview |
-| `$cv-bold-highlights` | Add sparse `\textbf{}` around existing metrics or technologies | Updated CV block |
-| `$cv-score` | Score ATS readiness and hiring-manager fit against a job description out of 100 | Read-only scorecard |
-
-There is intentionally no all-in-one `customise-cv` skill. Content, layout, job tailoring, formatting, and scoring remain separate concerns, but applying an edit does not require a separate skill.
+If you used an older version of the toolkit, the setup command safely moves existing root-level `main.tex`, `job-description.txt`, and `cv-context/` inputs into `workspace/`. It never replaces an existing workspace file.
 
 ## Repository layout
 
 ```text
 .
-├── .agents/skills/          # Reusable repository-scoped workflows
-├── AGENTS.md                # Repo-wide privacy and edit-scope guardrails
+├── .agents/skills/          # The five CV skills
+├── templates/               # Tracked public starter content
+│   ├── main.tex
+│   ├── job-description.txt
+│   └── context/
+├── workspace/               # Ignored private canonical inputs
+├── applications/            # Ignored private job-specific copies
+├── drafts/                  # Ignored tailoring drafts and previews
 ├── scripts/
-│   ├── cv_drafts.py         # Target discovery, draft, preview, guarded apply
-│   ├── cv_tex.py            # Visible-text and bullet-count checks
+│   ├── cv_drafts.py         # Target discovery, checks, and tailoring drafts
+│   ├── cv_tex.py            # LaTeX bullet parsing and visible-text checks
 │   ├── prepare_application.py
-│   └── setup_workspace.py   # Non-destructive private-input setup
+│   └── setup_workspace.py
 ├── tests/
-├── main.example.tex         # Public CV template
-├── job-description.example.txt
-└── cv-context.example/      # Public evidence templates
+└── AGENTS.md                # Privacy, evidence, and edit-scope guardrails
 ```
 
-The following local working files are ignored by Git:
-
-```text
-main.tex
-job-description.txt
-cv-context/
-applications/
-drafts/
-```
-
-This keeps personal details, employer evidence, vacancies, application copies, draft prose, previews, and backups out of commits by default.
-
-## Setup
-
-Requirements are Python 3.10 or newer and Codex in the ChatGPT desktop app, CLI, or IDE extension. A LaTeX distribution is optional but required for true rendered line-count and page verification. Open the repository root so Codex discovers `AGENTS.md` and `.agents/skills/`.
-
-Run from the repository root:
+Do not edit or delete files under `templates/` during normal use. Restore an accidental template change with:
 
 ```bash
-python3 scripts/setup_workspace.py
+git restore templates
 ```
 
-The initializer copies the tracked templates only when each private destination is missing. It deliberately has no overwrite option.
+## Skills
 
-Paste or maintain your real CV only in `main.tex`. Keep one existing `\resumeItem{...}` command for every bullet slot you want the toolkit to manage. A slot may be empty:
+| Skill | Use it for | Result |
+|---|---|---|
+| `$cv-build-bullets` | Create or strengthen truthful XYZ-style bullets | Direct edit to one named CV block, or a chat-only rewrite for pasted bullets |
+| `$cv-fit-bullets` | Fit and visually balance existing bullets | Direct edit with a strict two-rendered-line maximum |
+| `$cv-tailor-bullets` | Add supported job-relevant language | Private application copy plus a review draft |
+| `$cv-bold-highlights` | Bold the most scan-worthy existing details | Direct `\textbf{}` edit without changing visible wording |
+| `$cv-score` | Compare a CV with a vacancy | Read-only ATS and hiring-manager scores out of 100 |
 
-```tex
-\resumeItem{}
+There is no all-in-one skill or separate apply skill. Building, layout, tailoring, highlighting, and scoring remain separate so each change is easy to inspect.
+
+## Select one exact CV block
+
+List the available Experience and Projects targets:
+
+```bash
+python3 scripts/cv_drafts.py list workspace/main.tex
 ```
 
-Paste the complete vacancy into `job-description.txt`. Do not put personal, confidential, vacancy, or employer-internal material in tracked examples.
+A file-targeted request should name:
 
-## Add evidence
+- the CV path;
+- `experience` or `project`; and
+- the exact company or project name returned by the command.
 
-Create one folder per CV target:
+Example:
 
 ```text
-cv-context/experience/example-company/
-cv-context/projects/example-project/
+Use $cv-build-bullets on workspace/main.tex for experience "Example Company". Update only its resumeItem contents now.
 ```
 
-Folder names should be lowercase slugs of the company or project name in `main.tex`. You may add non-empty `.md`, `.txt`, or `.pdf` sources with facts you can defend in an interview: contribution, mechanism, technology, scale, tests, reliability, security, performance, constraints, and outcomes.
+The direct-edit skills preserve every heading, date, command, bullet slot, and unrelated byte. They only replace content inside the selected block's existing `\resumeItem{...}` commands.
 
-Context is optional. `$cv-build-bullets` does not inspect `cv-context/` unless you explicitly ask it to use a named file or target folder. A general request to use a folder reads its `.md` and `.txt` evidence only; PDFs are opened only when you explicitly ask to read PDFs or name the exact PDF. Existing or pasted bullet wording and facts in your prompt are sufficient evidence for rewording, but never permit invented metrics, technologies, ownership, or impact.
+## Build or rewrite bullets
 
-To improve bullets pasted directly into chat without touching the repository:
+For an existing CV block:
 
 ```text
-Use $cv-build-bullets to strengthen the bullets below using only their existing facts. Keep the same bullet count and do not read any context files.
+Use $cv-build-bullets on workspace/main.tex for experience "Example Company". Strengthen its bullets using only their current facts.
+```
+
+For bullets pasted into chat, the same skill can work without touching the repository:
+
+```text
+Use $cv-build-bullets to strengthen these bullets using only their existing facts:
 
 \resumeItem{Built ...}
 \resumeItem{Improved ...}
 ```
 
-## Select exactly what to edit
+The default ceiling is 220 visible characters per bullet and the target block average is at most 180. Bullets stay content-first: understandable to HR from the opening clause and technically credible to a senior engineer from one selective method or decision.
 
-List the editable targets in a CV:
+## Optional evidence
 
-```bash
-python3 scripts/cv_drafts.py list main.tex
-```
+Current bullet wording and facts stated in your prompt are sufficient evidence for rewrites. Context is optional and never read automatically.
 
-Example output:
+To authorise selected text evidence:
 
 ```text
-experience: Example Company — Software Engineer (4 bullets)
-project: Example Project — Technology Stack (4 bullets)
+Use $cv-build-bullets on workspace/main.tex for experience "Example Company". Also read its workspace/context folder.
 ```
 
-Every writing request that targets a CV file should name:
+A folder request permits relevant non-empty `.md` and `.txt` files for that target. PDFs remain opt-in: explicitly name the PDF or ask the skill to read PDFs. No skill may invent technologies, metrics, ownership, scale, outcomes, or causality.
 
-- the CV path;
-- `experience` or `project`; and
-- the exact company or project name shown by `list`.
-
-This prevents an agent from silently choosing the wrong section.
-
-## Build directly in `main.tex`
-
-Name the exact block and ask the skill to edit it:
+## Fit the rendered layout
 
 ```text
-Use $cv-build-bullets on main.tex for experience "Example Company". Read its cv-context folder. Fill empty slots or strengthen existing bullets, and edit main.tex now.
+Use $cv-fit-bullets on workspace/main.tex for experience "Example Company" in balanced-lines mode.
 ```
 
-Omit “Read its cv-context folder” to work from the block's current bullets and facts in your prompt only. Add “also read `<exact-file>.pdf`” only when that PDF is genuinely needed.
+Available modes are `one-line`, `preserve-lines`, `n-lines` for one or two lines, `balanced-lines`, and `page-fit`. Every mode has a strict maximum of two rendered lines per bullet. Layout fitting requires a working LaTeX renderer because line count cannot be verified from character count alone.
 
-The skill:
+In `balanced-lines` mode, the skill aims for mostly two-line bullets, naturally varied final-line lengths, and an occasional strong one-line bullet. It may add only supported detail from context you explicitly authorise.
 
-- confirms one exact Experience or Projects target;
-- preserves the number and order of `\resumeItem{...}` commands;
-- replaces only their inner content;
-- keeps every bullet within 220 visible characters by default and the block average at or below 180, naturally aiming for 175–180 without padding shorter bullets;
-- splits independent achievements across existing slots rather than overloading one bullet;
-- leads with plain-English value for HR, then adds only the technical evidence needed to impress a senior engineer;
-- verifies the resulting LaTeX and visible character counts; and
-- leaves every heading, date, command, comment, and unrelated section unchanged.
-
-Review the result in `main.tex`. If you dislike the wording, tell `$cv-build-bullets` what to change and it will edit the same block again.
-
-## Fitting bullets
-
-Content-first bullets may intentionally span multiple lines. Fit one named block only after its content is strong:
+## Add sparse bold highlights
 
 ```text
-Use $cv-fit-bullets on main.tex for experience "Example Company". Fit the bullets directly to one line with a hard maximum of 112 visible characters.
+Use $cv-bold-highlights on workspace/main.tex for experience "Example Company".
 ```
 
-Supported modes are:
+The skill changes only formatting inside existing bullets. It prioritises meaningful metrics, differentiating mechanisms, central technologies, and strong validation signals without enforcing one bold span per bullet. LaTeX rendering is optional for this skill; if unavailable, review wrapping in Overleaf.
 
-- `one-line`: default hard ceiling of 112 visible characters;
-- `preserve-lines`: keep a one- or two-line footprint and compress longer source bullets to two;
-- `n-lines`: target a user-specified one- or two-line footprint;
-- `balanced-lines`: create a rounded, ragged-right silhouette with mostly two-line bullets, varied final-line lengths, and occasional strong one-line bullets; and
-- `page-fit`: keep the CV within its current page limit.
+## Score and tailor for a job
 
-For example:
+Score the canonical CV against the current vacancy:
 
 ```text
-Use $cv-fit-bullets on main.tex for experience "Example Company" in balanced-lines mode. Use the supplied screenshots as the visual-rhythm reference and preserve a natural mix of final-line lengths.
+Use $cv-score to score workspace/main.tex against workspace/job-description.txt.
 ```
 
-The skill edits only the selected `\resumeItem{...}` contents directly in the named CV, then compiles that CV into a temporary directory for verification. It does not create a JSON draft, preview TeX file, or approval step. Every mode has a strict two-rendered-line maximum; a three-line bullet must never remain in the completed edit. In `balanced-lines` mode, inspect the block as a whole: most bullets should occupy two lines, their final lines should taper to varied natural endpoints, and rare one-line bullets should remain concise rather than being padded. For blocks with at least three two-line bullets, the default density floor is approximately 60% average final-line fill with at least one ending around 75% or more.
-
-When existing bullets do not contain enough truthful detail to reach that density, explicitly authorise the target's context folder:
-
-```text
-Use $cv-fit-bullets on main.tex for experience "Example Company" in balanced-lines mode. If needed, read its cv-context folder for supported detail, but do not read PDFs.
-```
-
-The skill may then use non-empty `.md` and `.txt` evidence from that target only. PDFs remain opt-in. If the available evidence still cannot support a fuller result, the skill does not modify the CV instead of inventing or padding content. Review the direct result in `main.tex` and request another revision if needed.
-
-## Tailoring to a job
-
-Paste one complete vacancy into ignored `job-description.txt`, then score the canonical CV:
-
-```text
-Use $cv-score to score main.tex against job-description.txt.
-```
-
-Create a non-overwriting private application workspace:
+Create a private, non-overwriting application copy:
 
 ```bash
 python3 scripts/prepare_application.py example-company-software-engineer
@@ -222,102 +168,50 @@ This creates:
 
 ```text
 applications/example-company-software-engineer/
-├── main.source.tex       # Immutable starting snapshot
-├── main.tex              # Application working CV
+├── main.source.tex
+├── main.tex
 └── job-description.txt
 ```
 
-Tailor one named block at a time:
+Tailor only the application copy:
 
 ```text
-Use $cv-tailor-bullets on applications/example-company-software-engineer/main.tex for experience "Example Company" against its job description. Create a draft only.
+Use $cv-tailor-bullets on applications/example-company-software-engineer/main.tex for experience "Example Company". Create a draft against its job description.
 ```
 
-Supported equivalents and keywords may be proposed only when the relevant evidence or established bullet supports the same claim. Unsupported requirements remain honest gaps. Ask `$cv-tailor-bullets` to apply its exact reviewed draft, then rescore with the same `$cv-score` rubric.
+The tailoring skill may add only supported keywords and leaves unsupported requirements as honest gaps. It applies its own exact draft only after you explicitly request application.
 
-## Sparse bold highlights
+## Checks
 
-```text
-Use $cv-bold-highlights on main.tex for experience "Example Company" and update the selected bullets directly.
-```
-
-This stage may add forms such as `\textbf{10M+ organisations}`, `\textbf{parallelized Camunda workflows}`, or `\textbf{Elasticsearch}` while keeping visible wording identical. It uses a variable zero-to-three spans per bullet, permits a fourth only when each span adds a distinct signal, and leaves low-signal bullets unbolded. The skill edits only the selected `\resumeItem{...}` contents and does not create a JSON draft, preview TeX file, or approval step. A LaTeX installation is optional: when a renderer already exists, the skill checks wrapping with temporary output; otherwise it completes the semantic bolding and asks you to review wrapping in Overleaf. You do not need to install MacTeX for this skill.
-
-## Deterministic checks
-
-Inspect active bullets and visible character counts:
+Inspect visible bullet text and character counts:
 
 ```bash
-python3 scripts/cv_tex.py main.tex
+python3 scripts/cv_tex.py workspace/main.tex
 ```
 
-Enforce the build limits on one exact CV block:
+Enforce the build limits for one exact block:
 
 ```bash
 python3 scripts/cv_drafts.py check \
-  --cv main.tex \
+  --cv workspace/main.tex \
   --kind experience \
   --target "Example Company" \
   --max-chars 220 \
   --max-average 180
 ```
 
-This command exits unsuccessfully if a selected bullet is empty or over 220 visible characters, or if the selected block averages more than 180. It checks only the named block.
-
-Enforce a 112-character ceiling:
+Confirm private paths are ignored before committing:
 
 ```bash
-python3 scripts/cv_tex.py drafts/previews/example-company.tex --max-chars 112
+git status --short
+git diff --cached
+git check-ignore -v workspace/ applications/ drafts/
 ```
 
-Compare visible text or character footprints:
-
-```bash
-python3 scripts/cv_tex.py drafts/previews/example-company.tex \
-  --compare main.tex \
-  --tolerance 3
-```
-
-Run the standard-library tests:
+Run the repository tests after changing scripts:
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-## Compile and inspect
-
-When a LaTeX toolchain is installed:
-
-```bash
-pdflatex -interaction=nonstopmode -halt-on-error \
-  -output-directory=drafts/previews drafts/previews/example-company.tex
-pdflatex -interaction=nonstopmode -halt-on-error \
-  -output-directory=drafts/previews drafts/previews/example-company.tex
-```
-
-Inspect the PDF for line wrapping, page count, spacing, and machine-readable text before applying the draft.
-
-## Truth policy
-
-- Valid sources are pasted or current bullet wording, explicit user facts, and only the context files you explicitly ask the skill to read.
-- A skills-section keyword alone does not prove use in a specific achievement.
-- Unsupported job requirements are reported gaps, not text to insert.
-- Never invent metrics, scale, technologies, ownership, business impact, or causality.
-- Preserve qualifiers such as “estimated” whenever accuracy depends on them.
-
-## Privacy check before committing
-
-```bash
-git status --short
-git diff --cached
-git check-ignore -v main.tex job-description.txt cv-context/ applications/ drafts/
-```
-
-Only anonymised templates, reusable skills, scripts, and tests belong in Git.
-
-## Further reading
-
-- [Official OpenAI documentation: build skills](https://learn.chatgpt.com/docs/build-skills)
-- [Google resume-writing guidance](https://services.google.com/fh/files/misc/resume-writing-tips-for-veterans-2021.pdf)
-- [MIT guidance on skills, metrics, and concise bullets](https://capd.mit.edu/resources/resumes-writing-about-your-skills/)
-- [Oxford University CV guidance](https://www.careers.ox.ac.uk/cvs)
+Only anonymised templates, reusable skills, scripts, tests, and documentation belong in Git.

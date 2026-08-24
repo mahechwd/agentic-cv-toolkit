@@ -2,11 +2,11 @@
 
 ## Privacy and evidence
 
-- Treat `main.tex`, `job-description.txt`, and `cv-context/` as the user's actual private inputs. Never redirect them to the tracked `*.example.*` templates.
+- Treat `workspace/main.tex`, `workspace/job-description.txt`, and `workspace/context/` as the user's actual private inputs. Never redirect them to tracked files under `templates/`.
 - Keep personal CVs, evidence, job descriptions, application copies, drafts, previews, and backups in the ignored paths documented in `README.md`.
 - Never copy personal or employer-confidential material into tracked examples.
 - Use only pasted or current bullet wording, explicit user facts, and context files the user explicitly authorises as claim evidence. Never invent metrics, technologies, scale, ownership, outcomes, or causality.
-- Do not inspect or read `cv-context/` merely because it exists. Read context only when the user asks. Never open a PDF unless the user explicitly asks to read PDFs or names the exact PDF.
+- Do not inspect or read `workspace/context/` merely because it exists. Read context only when the user asks. Never open a PDF unless the user explicitly asks to read PDFs or names the exact PDF.
 
 ## Bullet workflow
 
@@ -22,7 +22,7 @@
 - `$cv-fit-bullets` has a hard maximum of two rendered lines per bullet in every mode. Never complete a three-line fitted bullet; if rendering is unavailable, stop before editing because the limit cannot be verified.
 - In `balanced-lines` mode, reject a uniformly sparse block: for at least three two-line bullets, target at least 60% average final-line fill and one ending around 75% or more. Expand only from current wording, explicit user facts, or context files the user explicitly authorised; otherwise do not modify the CV.
 - Preserve commands, bullet count, order, headings, dates, chronology, comments, whitespace outside the selected bullet bodies, and every unrelated byte of the CV.
-- Treat `main.tex` as canonical. Job-specific tailoring targets only a private `applications/<slug>/main.tex` copy.
+- Treat `workspace/main.tex` as canonical. Job-specific tailoring targets only a private `applications/<slug>/main.tex` copy.
 - Scoring is read-only and must not modify the CV or draft.
 
 ## Verification

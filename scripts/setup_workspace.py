@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create ignored private CV inputs from tracked public templates."""
+"""Create or migrate the ignored private CV workspace."""
 
 from __future__ import annotations
 
@@ -9,48 +9,82 @@ import sys
 from pathlib import Path
 
 
-FILE_TEMPLATES = {
-    "main.example.tex": "main.tex",
-    "job-description.example.txt": "job-description.txt",
-}
-DIRECTORY_TEMPLATES = {
-    "cv-context.example": "cv-context",
+TEMPLATE_DIRECTORY = "templates"
+WORKSPACE_DIRECTORY = "workspace"
+FILE_TEMPLATES = ("main.tex", "job-description.txt")
+DIRECTORY_TEMPLATES = ("context",)
+LEGACY_INPUTS = {
+    "main.tex": "main.tex",
+    "job-description.txt": "job-description.txt",
+    "cv-context": "context",
 }
 
 
 def setup_workspace(root: Path) -> dict[str, str]:
-    """Create missing private inputs without overwriting existing user files."""
+    """Create missing inputs and safely migrate the previous root layout."""
     root = root.resolve()
+    templates = root / TEMPLATE_DIRECTORY
+    workspace = root / WORKSPACE_DIRECTORY
     results: dict[str, str] = {}
 
-    for source_name, destination_name in FILE_TEMPLATES.items():
-        source = root / source_name
-        destination = root / destination_name
+    for name in FILE_TEMPLATES:
+        source = templates / name
         if not source.is_file():
             raise FileNotFoundError(f"missing tracked template: {source}")
-        if destination.exists():
-            results[destination_name] = "kept existing"
-            continue
-        shutil.copy2(source, destination)
-        results[destination_name] = "created"
-
-    for source_name, destination_name in DIRECTORY_TEMPLATES.items():
-        source = root / source_name
-        destination = root / destination_name
+    for name in DIRECTORY_TEMPLATES:
+        source = templates / name
         if not source.is_dir():
             raise FileNotFoundError(f"missing tracked template directory: {source}")
+
+    workspace.mkdir(exist_ok=True)
+
+    for legacy_name, destination_name in LEGACY_INPUTS.items():
+        source = root / legacy_name
+        destination = workspace / destination_name
+        result_name = str(destination.relative_to(root))
         if destination.exists():
-            results[f"{destination_name}/"] = "kept existing"
+            if destination_name in DIRECTORY_TEMPLATES and not destination.is_dir():
+                raise NotADirectoryError(f"expected private directory: {destination}")
+            if destination_name not in DIRECTORY_TEMPLATES and not destination.is_file():
+                raise IsADirectoryError(f"expected private file: {destination}")
+            suffix = "/" if destination.is_dir() else ""
+            results[result_name + suffix] = "kept existing"
+            continue
+        if source.exists():
+            shutil.move(str(source), str(destination))
+            suffix = "/" if destination.is_dir() else ""
+            results[result_name + suffix] = "migrated legacy input"
+
+    for name in FILE_TEMPLATES:
+        source = templates / name
+        destination = workspace / name
+        result_name = str(destination.relative_to(root))
+        if destination.exists():
+            if not destination.is_file():
+                raise IsADirectoryError(f"expected private file: {destination}")
+            results.setdefault(result_name, "kept existing")
+            continue
+        shutil.copy2(source, destination)
+        results[result_name] = "created from template"
+
+    for name in DIRECTORY_TEMPLATES:
+        source = templates / name
+        destination = workspace / name
+        result_name = f"{destination.relative_to(root)}/"
+        if destination.exists():
+            if not destination.is_dir():
+                raise NotADirectoryError(f"expected private directory: {destination}")
+            results.setdefault(result_name, "kept existing")
             continue
         shutil.copytree(source, destination)
-        results[f"{destination_name}/"] = "created"
+        results[result_name] = "created from template"
 
     return results
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Create ignored main.tex, job-description.txt, and cv-context/ inputs",
+        description="Create or migrate the ignored workspace/ CV inputs",
     )
     parser.add_argument("--root", type=Path, default=Path.cwd())
     args = parser.parse_args()
@@ -63,10 +97,10 @@ def main() -> int:
 
     for path, status in results.items():
         print(f"{path}: {status}")
-    print("Tracked *.example.* templates were not modified.")
-    print("Next: paste your LaTeX CV into main.tex.")
-    print("Next: paste one complete vacancy into job-description.txt.")
-    print("Next: add evidence under cv-context/experience/ or cv-context/projects/.")
+    print("Tracked templates/ files were not modified.")
+    print("Next: paste your LaTeX CV into workspace/main.tex.")
+    print("Next: paste one complete vacancy into workspace/job-description.txt.")
+    print("Next: add evidence under workspace/context/experience/ or workspace/context/projects/.")
     return 0
 
 

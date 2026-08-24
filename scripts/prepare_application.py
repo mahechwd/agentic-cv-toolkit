@@ -18,14 +18,14 @@ def prepare_application(root: Path, slug: str) -> Path:
         raise ValueError("slug must contain lowercase letters, digits, and single hyphens")
 
     root = root.resolve()
-    canonical_cv = root / "main.tex"
-    job_description = root / "job-description.txt"
+    canonical_cv = root / "workspace" / "main.tex"
+    job_description = root / "workspace" / "job-description.txt"
     destination = root / "applications" / slug
 
     if not canonical_cv.is_file() or canonical_cv.stat().st_size == 0:
-        raise ValueError("main.tex is missing or empty")
+        raise ValueError("workspace/main.tex is missing or empty")
     if not job_description.is_file() or job_description.stat().st_size == 0:
-        raise ValueError("job-description.txt is missing or empty")
+        raise ValueError("workspace/job-description.txt is missing or empty")
     if destination.exists():
         raise FileExistsError(f"refusing to overwrite existing application workspace: {destination}")
 

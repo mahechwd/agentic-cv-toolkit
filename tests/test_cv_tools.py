@@ -368,8 +368,10 @@ class PrepareApplicationTests(unittest.TestCase):
     def test_creates_immutable_source_and_refuses_overwrite(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
-            (root / "main.tex").write_text("canonical", encoding="utf-8")
-            (root / "job-description.txt").write_text("vacancy", encoding="utf-8")
+            workspace = root / "workspace"
+            workspace.mkdir()
+            (workspace / "main.tex").write_text("canonical", encoding="utf-8")
+            (workspace / "job-description.txt").write_text("vacancy", encoding="utf-8")
 
             destination = PREPARE.prepare_application(root, "example-engineer")
 
@@ -382,49 +384,91 @@ class PrepareApplicationTests(unittest.TestCase):
     def test_rejects_empty_job_description(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
-            (root / "main.tex").write_text("canonical", encoding="utf-8")
-            (root / "job-description.txt").write_text("", encoding="utf-8")
+            workspace = root / "workspace"
+            workspace.mkdir()
+            (workspace / "main.tex").write_text("canonical", encoding="utf-8")
+            (workspace / "job-description.txt").write_text("", encoding="utf-8")
             with self.assertRaises(ValueError):
                 PREPARE.prepare_application(root, "example-engineer")
 
 
 class SetupWorkspaceTests(unittest.TestCase):
+    @staticmethod
+    def create_templates(root: Path) -> None:
+        templates = root / "templates"
+        templates.mkdir()
+        (templates / "main.tex").write_text("public cv template", encoding="utf-8")
+        (templates / "job-description.txt").write_text(
+            "public job template",
+            encoding="utf-8",
+        )
+        evidence_template = templates / "context" / "experience" / "example-company"
+        evidence_template.mkdir(parents=True)
+        (evidence_template / "evidence.md").write_text(
+            "public evidence template",
+            encoding="utf-8",
+        )
+
     def test_creates_private_inputs_and_never_overwrites_them(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
-            (root / "main.example.tex").write_text("public cv template", encoding="utf-8")
-            (root / "job-description.example.txt").write_text(
-                "public job template",
-                encoding="utf-8",
-            )
-            evidence_template = (
-                root / "cv-context.example" / "experience" / "example-company"
-            )
-            evidence_template.mkdir(parents=True)
-            (evidence_template / "evidence.md").write_text(
-                "public evidence template",
-                encoding="utf-8",
-            )
+            self.create_templates(root)
 
             first = SETUP.setup_workspace(root)
-            (root / "main.tex").write_text("private cv", encoding="utf-8")
-            (root / "job-description.txt").write_text("private job", encoding="utf-8")
-            private_evidence = root / "cv-context" / "experience" / "example-company" / "evidence.md"
+            workspace = root / "workspace"
+            (workspace / "main.tex").write_text("private cv", encoding="utf-8")
+            (workspace / "job-description.txt").write_text("private job", encoding="utf-8")
+            private_evidence = (
+                workspace / "context" / "experience" / "example-company" / "evidence.md"
+            )
             private_evidence.write_text("private evidence", encoding="utf-8")
             second = SETUP.setup_workspace(root)
 
-            self.assertEqual("created", first["main.tex"])
-            self.assertEqual("created", first["job-description.txt"])
-            self.assertEqual("created", first["cv-context/"])
-            self.assertEqual("kept existing", second["main.tex"])
-            self.assertEqual("kept existing", second["job-description.txt"])
-            self.assertEqual("kept existing", second["cv-context/"])
-            self.assertEqual("private cv", (root / "main.tex").read_text(encoding="utf-8"))
+            self.assertEqual("created from template", first["workspace/main.tex"])
+            self.assertEqual(
+                "created from template",
+                first["workspace/job-description.txt"],
+            )
+            self.assertEqual("created from template", first["workspace/context/"])
+            self.assertEqual("kept existing", second["workspace/main.tex"])
+            self.assertEqual(
+                "kept existing",
+                second["workspace/job-description.txt"],
+            )
+            self.assertEqual("kept existing", second["workspace/context/"])
+            self.assertEqual(
+                "private cv",
+                (workspace / "main.tex").read_text(encoding="utf-8"),
+            )
             self.assertEqual(
                 "private job",
-                (root / "job-description.txt").read_text(encoding="utf-8"),
+                (workspace / "job-description.txt").read_text(encoding="utf-8"),
             )
             self.assertEqual("private evidence", private_evidence.read_text(encoding="utf-8"))
+
+    def test_migrates_legacy_private_inputs_without_overwriting(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            self.create_templates(root)
+            (root / "main.tex").write_text("legacy cv", encoding="utf-8")
+            (root / "job-description.txt").write_text("legacy job", encoding="utf-8")
+            legacy_context = root / "cv-context"
+            legacy_context.mkdir()
+            (legacy_context / "notes.txt").write_text("legacy evidence", encoding="utf-8")
+
+            results = SETUP.setup_workspace(root)
+
+            self.assertEqual("migrated legacy input", results["workspace/main.tex"])
+            self.assertEqual(
+                "migrated legacy input",
+                results["workspace/job-description.txt"],
+            )
+            self.assertEqual("migrated legacy input", results["workspace/context/"])
+            self.assertEqual(
+                "legacy cv",
+                (root / "workspace" / "main.tex").read_text(encoding="utf-8"),
+            )
+            self.assertFalse((root / "main.tex").exists())
 
     def test_fails_when_a_tracked_template_is_missing(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

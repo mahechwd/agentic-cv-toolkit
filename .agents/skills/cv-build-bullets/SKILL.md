@@ -12,11 +12,11 @@ Create the strongest truthful bullets before layout compression. Work in either 
 - Read [references/building-rules.md](references/building-rules.md) completely before drafting.
 - Use **prompt-only mode** when the user pastes bullets and asks to create, edit, strengthen, or reword them without asking to target a CV file.
 - Use **CV edit mode** when the request names, or clearly intends to update, a block in a CV file.
-- Do not force a pasted-bullet request through repository discovery, `main.tex`, or `cv-context/`.
+- Do not force a pasted-bullet request through repository discovery, `workspace/main.tex`, or `workspace/context/`.
 
 ## Control context access
 
-- By default, do not list, inspect, or read anything under `cv-context/`. Existing or pasted bullet wording and facts explicitly supplied in the prompt are valid evidence by themselves.
+- By default, do not list, inspect, or read anything under `workspace/context/`. Existing or pasted bullet wording and facts explicitly supplied in the prompt are valid evidence by themselves.
 - If the user names one or more context files, read only those files.
 - If the user explicitly asks to use a target's context folder, rescan that folder and read its non-empty `.md` and `.txt` files. Report empty, hidden, unsupported, or unreadable files without treating them as evidence.
 - Do not open, extract, or summarise any PDF merely because it exists or because the user asked to use a context folder.
@@ -35,14 +35,14 @@ Create the strongest truthful bullets before layout compression. Work in either 
 
 ## CV edit mode
 
-1. Obtain an explicit kind (`experience` or `project`), target name, and CV path; default to canonical `main.tex` only when that is clearly intended.
+1. Obtain an explicit kind (`experience` or `project`), target name, and CV path; default to canonical `workspace/main.tex` only when that is clearly intended.
 2. Run `python3 scripts/cv_drafts.py list <cv-path>` and require one exact target match. Do not guess between plausible targets.
 3. Read the exact target block and record its active `\resumeItem{...}` contents and count. Stop if the block is missing, ambiguous, or contains no slots.
 4. Treat non-empty current bullets and explicit prompt facts as sufficient evidence. Add context evidence only under the access rules above.
 5. Build exactly one replacement for each existing slot, then use `apply_patch` to replace only the inner content of those `\resumeItem{...}` commands in the selected block.
 6. Edit the named CV immediately. Do not create a draft JSON and do not wait for a separate approval step.
 7. Do not add, delete, reorder, or move bullet commands. Preserve headings, roles, dates, locations, chronology, commands, comments, whitespace outside the selected inner contents, and every unrelated byte.
-8. Never edit tracked examples with personal information.
+8. Never edit tracked files under `templates/` with personal information.
 
 ## Write the bullets
 
@@ -67,4 +67,4 @@ Create the strongest truthful bullets before layout compression. Work in either 
 - Re-read the final bullets and trace each material claim to current wording, prompt facts, or an explicitly authorised context source.
 - Report the CV path, target, before/after bullets, evidence actually used, bullet count, rendered character counts, and any context files intentionally skipped. Do not imply that unrequested context was inspected.
 - State explicitly that the bullets are content-first and have not been fitted to a page unless the user also requested and authorised that separate work.
-- Tell the user that the named CV block has been updated and they can request another revision after reviewing `main.tex`.
+- Tell the user that the named CV block has been updated and they can request another revision after reviewing `workspace/main.tex`.

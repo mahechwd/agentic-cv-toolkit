@@ -1,4 +1,4 @@
 interface:
   display_name: "CV Score"
   short_description: "Score CV fit against a job description"
-  default_prompt: "Use $cv-score to score my CV against job-description.txt out of 100."
+  default_prompt: "Use $cv-score to score workspace/main.tex against workspace/job-description.txt out of 100."

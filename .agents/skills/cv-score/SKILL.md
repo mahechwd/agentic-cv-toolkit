@@ -9,8 +9,8 @@ Produce a candid, repeatable job-fit assessment without modifying any files.
 
 ## Select inputs
 
-- Use the CV path named by the user. Otherwise use canonical `main.tex` for a baseline score or a clearly identified `applications/<slug>/main.tex` for a tailored score.
-- Use the matching non-empty `job-description.txt`. Stop if the vacancy is empty, placeholder text, or cannot be paired unambiguously with the CV.
+- Use the CV path named by the user. Otherwise use canonical `workspace/main.tex` for a baseline score or a clearly identified `applications/<slug>/main.tex` for a tailored score.
+- Use `workspace/job-description.txt` with the canonical CV, or the application folder's non-empty `job-description.txt` with a tailored CV. Stop if the vacancy is empty, placeholder text, or cannot be paired unambiguously with the CV.
 - Read [references/scoring-rubric.md](references/scoring-rubric.md) completely before scoring.
 - Run `python3 scripts/cv_tex.py <cv-path> --json` so LaTeX commands do not distort semantic review or visible character counts.
 
@@ -18,7 +18,7 @@ Produce a candid, repeatable job-fit assessment without modifying any files.
 
 1. Separate must-have qualifications, preferred qualifications, responsibilities, technologies, domain language, and behavioural expectations.
 2. Distinguish exact terms from substantive equivalents; do not penalise harmless wording differences.
-3. Classify important terms as present, supported but absent, supported but underrepresented, or unsupported. Consult relevant `cv-context/` evidence when deciding whether an absent term is supportable.
+3. Classify important terms as present, supported but absent, supported but underrepresented, or unsupported. Consult relevant `workspace/context/` evidence when deciding whether an absent term is supportable.
 4. Score every rubric component independently and cite concise CV/job evidence for each deduction.
 5. Use the same rubric and interpretation when rescoring a tailored CV. If a prior scorecard is supplied, show category deltas rather than silently changing standards.
 

@@ -13,7 +13,7 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 - Read [references/bolding-rules.md](references/bolding-rules.md) completely before editing.
 - Read the exact selected block and record its original `\resumeItem{...}` contents, bullet count, visible wording, character counts, and surrounding source.
 - When a LaTeX renderer is already available, optionally compile the current CV into an operating-system temporary directory and record selected line counts and page count. Do not require or recommend installing a LaTeX distribution solely for bolding.
-- Never edit tracked example CVs with personal content.
+- Never edit tracked CVs under `templates/` with personal content.
 
 ## Choose highlights
 
@@ -43,4 +43,4 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 
 ## Report
 
-List the CV path and target; each applied bold span and why it is scan-worthy; confirmation that visible wording and bullet count are unchanged; optional rendered line-count and page-count results when available; and any bullet deliberately left unbolded. State that the named CV block was updated directly and can be revised again after the user reviews `main.tex` or Overleaf.
+List the CV path and target; each applied bold span and why it is scan-worthy; confirmation that visible wording and bullet count are unchanged; optional rendered line-count and page-count results when available; and any bullet deliberately left unbolded. State that the named CV block was updated directly and can be revised again after the user reviews `workspace/main.tex` or Overleaf.

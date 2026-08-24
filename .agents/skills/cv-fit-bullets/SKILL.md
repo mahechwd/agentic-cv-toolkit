@@ -19,11 +19,11 @@ Fit selected bullets to the requested rendered space while preserving their stro
   - `page-fit`: keep the whole CV within its existing page limit.
 - When the user says “around 112 characters” or “one line” without another limit, use `one-line` with a hard ceiling of 112 visible characters.
 - Treat two rendered lines as an absolute maximum in every mode. Reject an `n-lines` request above two and never complete an edit containing a three-line bullet.
-- Never edit tracked example CVs with personal content.
+- Never edit tracked CVs under `templates/` with personal content.
 
 ## Control evidence expansion
 
-- Treat current bullet wording and explicit user facts as the default evidence set. Do not inspect `cv-context/` merely because a bullet looks sparse.
+- Treat current bullet wording and explicit user facts as the default evidence set. Do not inspect `workspace/context/` merely because a bullet looks sparse.
 - When the user explicitly authorises the selected target's context folder, read its non-empty `.md` and `.txt` files and use only relevant supported details to improve visual density. Record every file used for the final report.
 - Do not open a PDF unless the user explicitly asks to read PDFs or names that exact PDF. Do not treat an unread file or filename as evidence.
 - If the visual-density target cannot be reached from the authorised evidence, do not modify the CV and report the missing factual detail instead of padding or inventing content.
@@ -60,4 +60,4 @@ Fit selected bullets to the requested rendered space while preserving their stro
 
 ## Report
 
-List the CV path, target, mode, before/after bullets and visible character counts, facts deliberately preserved, facts removed as redundant context, evidence files actually used, final rendered line counts, the approximate final-line-fill pattern and average for `balanced-lines`, and page count when relevant. State that the named CV block was updated directly and can be revised again after the user reviews `main.tex`.
+List the CV path, target, mode, before/after bullets and visible character counts, facts deliberately preserved, facts removed as redundant context, evidence files actually used, final rendered line counts, the approximate final-line-fill pattern and average for `balanced-lines`, and page count when relevant. State that the named CV block was updated directly and can be revised again after the user reviews `workspace/main.tex`.

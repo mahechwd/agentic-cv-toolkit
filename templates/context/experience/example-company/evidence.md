@@ -1,6 +1,6 @@
 # Example Company — evidence template
 
-Replace every prompt below in your ignored `cv-context/` copy. Record facts, not polished CV prose.
+Replace every prompt below in your ignored `workspace/context/` copy. Record facts, not polished CV prose.
 
 ## Role and scope
 

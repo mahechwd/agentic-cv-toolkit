@@ -1,14 +1,12 @@
-# Keep all company names and source material local only.
-cv-context/
+# Keep the entire personal working area local only. It contains the canonical
+# CV, current vacancy, and any supporting evidence.
+workspace/
 
-# Treat the tracked example tree as read-only; hide any new personal files
-# accidentally added beneath it. Existing tracked templates remain tracked.
-cv-context.example/**
-
-# Keep personal CV and vacancy content local only.
-cv_main.tex
-main.tex
-job-description.txt
+# Previous private locations remain ignored so updating users cannot
+# accidentally commit them before running the workspace migration.
+/main.tex
+/job-description.txt
+/cv-context/
 
 # Keep every company-specific tailored CV and scorecard local only.
 applications/
