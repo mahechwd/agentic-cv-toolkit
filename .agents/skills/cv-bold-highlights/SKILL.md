@@ -9,7 +9,7 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 
 ## Select scope
 
-- Identify the exact CV path, kind (`experience` or `project`), and target name. Run `python3 scripts/cv_drafts.py list <cv-path>` and require one exact target.
+- Identify the exact CV path, kind (`experience` or `project`), and target name. Run `python3 scripts/cv_blocks.py list <cv-path>` and require one exact target.
 - Read [references/bolding-rules.md](references/bolding-rules.md) completely before editing.
 - Read the exact selected block and record its original `\resumeItem{...}` contents, bullet count, visible wording, character counts, and surrounding source.
 - When a LaTeX renderer is already available, optionally compile the current CV into an operating-system temporary directory and record selected line counts and page count. Do not require or recommend installing a LaTeX distribution solely for bolding.
@@ -34,7 +34,7 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 
 ## Verify
 
-1. Rerun `python3 scripts/cv_drafts.py list <cv-path>` and `python3 scripts/cv_tex.py <cv-path>` after editing. Compare every selected bullet's rendered text with the recorded baseline; it must be identical.
+1. Rerun `python3 scripts/cv_blocks.py list <cv-path>` and `python3 scripts/cv_tex.py <cv-path>` after editing. Compare every selected bullet's rendered text with the recorded baseline; it must be identical.
 2. When a renderer is already available, compile the edited CV into an operating-system temporary directory and inspect it. Every selected bullet should retain its original rendered line count and the CV should retain its page count.
 3. When rendering shows a new wrap or page overflow, remove the lower-priority highlight rather than rewriting content. Leave a bullet unbolded when no highlight fits safely.
 4. Confirm LaTeX is balanced and no content outside the selected `\resumeItem{...}` bodies changed.
@@ -43,4 +43,4 @@ Add restrained `\textbf{...}` emphasis while keeping the visible CV text identic
 
 ## Report
 
-List the CV path and target; each applied bold span and why it is scan-worthy; confirmation that visible wording and bullet count are unchanged; optional rendered line-count and page-count results when available; and any bullet deliberately left unbolded. State that the named CV block was updated directly and can be revised again after the user reviews `workspace/main.tex` or Overleaf.
+List the CV path and target; each applied bold span and why it is scan-worthy; confirmation that visible wording and bullet count are unchanged; optional rendered line-count and page-count results when available; and any bullet deliberately left unbolded. State that the named CV block was updated directly and can be revised again after the user reviews the named CV path or Overleaf.

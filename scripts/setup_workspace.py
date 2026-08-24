@@ -79,6 +79,16 @@ def setup_workspace(root: Path) -> dict[str, str]:
         shutil.copytree(source, destination)
         results[result_name] = "created from template"
 
+    tailored = workspace / "tailored.tex"
+    tailored_result_name = str(tailored.relative_to(root))
+    if tailored.exists():
+        if not tailored.is_file():
+            raise IsADirectoryError(f"expected private file: {tailored}")
+        results[tailored_result_name] = "kept existing"
+    else:
+        shutil.copy2(workspace / "main.tex", tailored)
+        results[tailored_result_name] = "created from main"
+
     return results
 
 
@@ -100,6 +110,7 @@ def main() -> int:
     print("Tracked templates/ files were not modified.")
     print("Next: paste your LaTeX CV into workspace/main.tex.")
     print("Next: paste one complete vacancy into workspace/job-description.txt.")
+    print("Next: tailor only workspace/tailored.tex; reset it explicitly for a new job.")
     print("Next: add evidence under workspace/context/experience/ or workspace/context/projects/.")
     return 0
 

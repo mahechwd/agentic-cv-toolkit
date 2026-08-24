@@ -8,11 +8,9 @@ workspace/
 /job-description.txt
 /cv-context/
 
-# Keep every company-specific tailored CV and scorecard local only.
-applications/
-
-# Keep generated drafts, previews, PDFs, and recovery backups local only.
-drafts/
+# Keep outputs from older toolkit versions private if they still exist locally.
+/applications/
+/drafts/
 
 # Ignore local Python bytecode produced by validation helpers.
 __pycache__/

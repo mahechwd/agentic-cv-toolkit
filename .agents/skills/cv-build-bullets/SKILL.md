@@ -36,7 +36,7 @@ Create the strongest truthful bullets before layout compression. Work in either 
 ## CV edit mode
 
 1. Obtain an explicit kind (`experience` or `project`), target name, and CV path; default to canonical `workspace/main.tex` only when that is clearly intended.
-2. Run `python3 scripts/cv_drafts.py list <cv-path>` and require one exact target match. Do not guess between plausible targets.
+2. Run `python3 scripts/cv_blocks.py list <cv-path>` and require one exact target match. Do not guess between plausible targets.
 3. Read the exact target block and record its active `\resumeItem{...}` contents and count. Stop if the block is missing, ambiguous, or contains no slots.
 4. Treat non-empty current bullets and explicit prompt facts as sufficient evidence. Add context evidence only under the access rules above.
 5. Build exactly one replacement for each existing slot, then use `apply_patch` to replace only the inner content of those `\resumeItem{...}` commands in the selected block.
@@ -57,8 +57,8 @@ Create the strongest truthful bullets before layout compression. Work in either 
 
 ## Verify and report
 
-- Rerun `python3 scripts/cv_drafts.py list <cv-path>` and `python3 scripts/cv_tex.py <cv-path>` after editing.
-- Run `python3 scripts/cv_drafts.py check --cv <cv-path> --kind <kind> --target <exact-name> --max-chars 220 --max-average 180`. Use the user's explicit limits instead when supplied.
+- Rerun `python3 scripts/cv_blocks.py list <cv-path>` and `python3 scripts/cv_tex.py <cv-path>` after editing.
+- Run `python3 scripts/cv_blocks.py check --cv <cv-path> --kind <kind> --target <exact-name> --max-chars 220 --max-average 180`. Use the user's explicit limits instead when supplied.
 - Treat this target-specific check as a completion gate. If it exits non-zero, shorten the failing bullets and rerun it until it passes; never report a completed CV edit while the check fails.
 - Confirm the selected bullet count is unchanged, every bullet is non-empty, LaTeX is balanced, and no content outside the selected `\resumeItem{...}` bodies changed. Correct the edit immediately if any invariant fails.
 - Aim for a natural block average of 175–180 visible characters. An average below 175 is acceptable when the bullets are already complete and strong; never add filler merely to reach the range.
@@ -67,4 +67,4 @@ Create the strongest truthful bullets before layout compression. Work in either 
 - Re-read the final bullets and trace each material claim to current wording, prompt facts, or an explicitly authorised context source.
 - Report the CV path, target, before/after bullets, evidence actually used, bullet count, rendered character counts, and any context files intentionally skipped. Do not imply that unrequested context was inspected.
 - State explicitly that the bullets are content-first and have not been fitted to a page unless the user also requested and authorised that separate work.
-- Tell the user that the named CV block has been updated and they can request another revision after reviewing `workspace/main.tex`.
+- Tell the user that the named CV block has been updated and they can request another revision after reviewing the named CV path.

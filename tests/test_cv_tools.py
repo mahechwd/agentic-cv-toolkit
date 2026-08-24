@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import importlib.util
-import json
 import re
 import subprocess
 import sys
@@ -18,8 +17,8 @@ sys.modules[SPEC.name] = CV_TEX
 SPEC.loader.exec_module(CV_TEX)
 
 PREPARE_SPEC = importlib.util.spec_from_file_location(
-    "prepare_application",
-    ROOT / "scripts" / "prepare_application.py",
+    "prepare_tailored",
+    ROOT / "scripts" / "prepare_tailored.py",
 )
 assert PREPARE_SPEC and PREPARE_SPEC.loader
 PREPARE = importlib.util.module_from_spec(PREPARE_SPEC)
@@ -35,14 +34,14 @@ SETUP = importlib.util.module_from_spec(SETUP_SPEC)
 sys.modules[SETUP_SPEC.name] = SETUP
 SETUP_SPEC.loader.exec_module(SETUP)
 
-CV_DRAFTS_SPEC = importlib.util.spec_from_file_location(
-    "cv_drafts",
-    ROOT / "scripts" / "cv_drafts.py",
+CV_BLOCKS_SPEC = importlib.util.spec_from_file_location(
+    "cv_blocks",
+    ROOT / "scripts" / "cv_blocks.py",
 )
-assert CV_DRAFTS_SPEC and CV_DRAFTS_SPEC.loader
-CV_DRAFTS = importlib.util.module_from_spec(CV_DRAFTS_SPEC)
-sys.modules[CV_DRAFTS_SPEC.name] = CV_DRAFTS
-CV_DRAFTS_SPEC.loader.exec_module(CV_DRAFTS)
+assert CV_BLOCKS_SPEC and CV_BLOCKS_SPEC.loader
+CV_BLOCKS = importlib.util.module_from_spec(CV_BLOCKS_SPEC)
+sys.modules[CV_BLOCKS_SPEC.name] = CV_BLOCKS
+CV_BLOCKS_SPEC.loader.exec_module(CV_BLOCKS)
 
 
 CV_SOURCE = r"""
@@ -112,17 +111,16 @@ class CvTexTests(unittest.TestCase):
         self.assertNotIn("comment", masked)
 
 
-class CvDraftTests(unittest.TestCase):
-    def _workspace(self, root: Path) -> tuple[Path, Path]:
+class CvBlockTests(unittest.TestCase):
+    def _workspace(self, root: Path) -> Path:
         cv = root / "main.tex"
-        draft = root / "drafts" / "build" / "example-company.json"
         cv.write_text(CV_SOURCE, encoding="utf-8")
-        return cv, draft
+        return cv
 
     def test_lists_exact_experience_and_project_targets(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
-            cv, _ = self._workspace(Path(temporary_directory))
-            targets = CV_DRAFTS.scan_targets(cv)
+            cv = self._workspace(Path(temporary_directory))
+            targets = CV_BLOCKS.scan_targets(cv)
 
         self.assertEqual(
             [("experience", "Example Company", 2), ("project", "Example Project", 1)],
@@ -130,134 +128,6 @@ class CvDraftTests(unittest.TestCase):
         )
         self.assertEqual("Software Engineer", targets[0].context)
         self.assertNotIn("Ignored Company", [target.name for target in targets])
-
-    def test_initialises_existing_and_empty_bullet_slots(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            cv, draft_path = self._workspace(Path(temporary_directory))
-            draft = CV_DRAFTS.initialise_draft(
-                cv,
-                "experience",
-                "Example Company",
-                draft_path,
-            )
-
-        self.assertEqual("draft", draft["status"])
-        self.assertEqual(2, draft["expected_bullet_count"])
-        self.assertEqual("Built a reliable API using Go.", draft["existing_bullets"][0]["rendered"])
-        self.assertEqual("", draft["existing_bullets"][1]["rendered"])
-        self.assertEqual(
-            ["Built a reliable API using Go.", ""],
-            draft["proposed_bullets"],
-        )
-
-    def test_requires_approval_before_apply(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            cv, draft_path = self._workspace(Path(temporary_directory))
-            CV_DRAFTS.initialise_draft(cv, "experience", "Example Company", draft_path)
-            with self.assertRaises(PermissionError):
-                CV_DRAFTS.apply_draft(cv, draft_path)
-
-    def test_preview_changes_copy_without_changing_source(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            root = Path(temporary_directory)
-            cv, draft_path = self._workspace(root)
-            original = cv.read_text(encoding="utf-8")
-            draft = CV_DRAFTS.initialise_draft(
-                cv,
-                "project",
-                "Example Project",
-                draft_path,
-            )
-            draft["proposed_bullets"] = ["Improved the project bullet."]
-            draft_path.write_text(json.dumps(draft), encoding="utf-8")
-            preview = root / "drafts" / "previews" / "project.tex"
-
-            CV_DRAFTS.preview_draft(cv, draft_path, preview)
-
-            self.assertEqual(original, cv.read_text(encoding="utf-8"))
-            self.assertIn("Improved the project bullet.", preview.read_text(encoding="utf-8"))
-            self.assertNotIn("Improved the project bullet.", original)
-
-    def test_applies_only_resume_item_contents_and_creates_backup(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            cv, draft_path = self._workspace(Path(temporary_directory))
-            original = cv.read_text(encoding="utf-8")
-            draft = CV_DRAFTS.initialise_draft(
-                cv,
-                "experience",
-                "Example Company",
-                draft_path,
-            )
-            draft["status"] = "approved"
-            draft["proposed_bullets"] = [
-                r"Reduced API latency by 30\% using Go caching.",
-                r"Added contract tests for 12 endpoints.",
-            ]
-            draft_path.write_text(json.dumps(draft), encoding="utf-8")
-
-            backup = CV_DRAFTS.apply_draft(cv, draft_path)
-            updated = cv.read_text(encoding="utf-8")
-            applied = json.loads(draft_path.read_text(encoding="utf-8"))
-
-            expected = original.replace(
-                "Built a reliable API using Go.",
-                r"Reduced API latency by 30\% using Go caching.",
-            ).replace(
-                r"\resumeItem{}",
-                r"\resumeItem{Added contract tests for 12 endpoints.}",
-                1,
-            )
-            self.assertEqual(expected, updated)
-            self.assertEqual(original, backup.read_text(encoding="utf-8"))
-            self.assertEqual("applied", applied["status"])
-            self.assertEqual(3, len(CV_TEX.extract_bullets(cv)))
-            self.assertIn("Processed 10,000 records with Python.", updated)
-
-    def test_rejects_stale_target_and_structural_proposals(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            cv, draft_path = self._workspace(Path(temporary_directory))
-            draft = CV_DRAFTS.initialise_draft(
-                cv,
-                "experience",
-                "Example Company",
-                draft_path,
-            )
-            draft["status"] = "approved"
-            draft["proposed_bullets"] = ["Changed", "Added"]
-            draft_path.write_text(json.dumps(draft), encoding="utf-8")
-            cv.write_text(CV_SOURCE.replace("using Go", "using Rust"), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "stale"):
-                CV_DRAFTS.apply_draft(cv, draft_path)
-
-            cv.write_text(CV_SOURCE, encoding="utf-8")
-            draft = CV_DRAFTS.initialise_draft(
-                cv,
-                "project",
-                "Example Project",
-                draft_path.with_name("example-project.json"),
-            )
-            draft["status"] = "approved"
-            draft["proposed_bullets"] = [r"\resumeItem{Nested}"]
-            structural_path = draft_path.with_name("example-project.json")
-            structural_path.write_text(json.dumps(draft), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "structural"):
-                CV_DRAFTS.apply_draft(cv, structural_path)
-
-    def test_rejects_changed_bullet_count_contract(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            cv, draft_path = self._workspace(Path(temporary_directory))
-            draft = CV_DRAFTS.initialise_draft(
-                cv,
-                "experience",
-                "Example Company",
-                draft_path,
-            )
-            draft["status"] = "approved"
-            draft["expected_bullet_count"] = 1
-            draft["proposed_bullets"] = ["Changed"]
-            draft_path.write_text(json.dumps(draft), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "bullet count"):
-                CV_DRAFTS.apply_draft(cv, draft_path)
 
     def test_target_length_check_passes_within_both_limits(self) -> None:
         source = CV_SOURCE.replace(
@@ -268,7 +138,7 @@ class CvDraftTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             cv = Path(temporary_directory) / "main.tex"
             cv.write_text(source, encoding="utf-8")
-            check = CV_DRAFTS.check_target_lengths(
+            check = CV_BLOCKS.check_target_lengths(
                 cv,
                 "experience",
                 "Example Company",
@@ -288,7 +158,7 @@ class CvDraftTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             cv = Path(temporary_directory) / "main.tex"
             cv.write_text(source, encoding="utf-8")
-            check = CV_DRAFTS.check_target_lengths(
+            check = CV_BLOCKS.check_target_lengths(
                 cv,
                 "experience",
                 "Example Company",
@@ -305,7 +175,7 @@ class CvDraftTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             cv = Path(temporary_directory) / "main.tex"
             cv.write_text(source, encoding="utf-8")
-            check = CV_DRAFTS.check_target_lengths(
+            check = CV_BLOCKS.check_target_lengths(
                 cv,
                 "experience",
                 "Example Company",
@@ -327,7 +197,7 @@ class CvDraftTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             cv = Path(temporary_directory) / "main.tex"
             cv.write_text(source, encoding="utf-8")
-            check = CV_DRAFTS.check_target_lengths(
+            check = CV_BLOCKS.check_target_lengths(
                 cv,
                 "experience",
                 "Example Company",
@@ -346,7 +216,7 @@ class CvDraftTests(unittest.TestCase):
             result = subprocess.run(
                 [
                     sys.executable,
-                    str(ROOT / "scripts" / "cv_drafts.py"),
+                    str(ROOT / "scripts" / "cv_blocks.py"),
                     "check",
                     "--cv",
                     str(cv),
@@ -364,22 +234,58 @@ class CvDraftTests(unittest.TestCase):
         self.assertIn("result: FAIL", result.stdout)
 
 
-class PrepareApplicationTests(unittest.TestCase):
-    def test_creates_immutable_source_and_refuses_overwrite(self) -> None:
+class PrepareTailoredTests(unittest.TestCase):
+    @staticmethod
+    def create_workspace(root: Path) -> Path:
+        workspace = root / "workspace"
+        workspace.mkdir()
+        (workspace / "main.tex").write_text("canonical", encoding="utf-8")
+        (workspace / "job-description.txt").write_text("vacancy", encoding="utf-8")
+        return workspace
+
+    def test_creates_tailored_and_preserves_existing_work(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            workspace = self.create_workspace(root)
+
+            destination, status = PREPARE.prepare_tailored(root)
+            destination.write_text("tailored work", encoding="utf-8")
+            same_destination, second_status = PREPARE.prepare_tailored(root)
+
+            self.assertEqual("created from main", status)
+            self.assertEqual(destination, same_destination)
+            self.assertEqual("kept existing", second_status)
+            self.assertEqual("tailored work", destination.read_text(encoding="utf-8"))
+            self.assertEqual("canonical", (workspace / "main.tex").read_text(encoding="utf-8"))
+
+    def test_reset_explicitly_replaces_tailored_from_main(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            workspace = self.create_workspace(root)
+            tailored = workspace / "tailored.tex"
+            tailored.write_text("old tailored work", encoding="utf-8")
+
+            destination, status = PREPARE.prepare_tailored(root, reset=True)
+
+            self.assertEqual("reset from main", status)
+            self.assertEqual("canonical", destination.read_text(encoding="utf-8"))
+
+    def test_refreshes_only_an_untouched_starter_copy(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
             workspace = root / "workspace"
+            templates = root / "templates"
             workspace.mkdir()
-            (workspace / "main.tex").write_text("canonical", encoding="utf-8")
+            templates.mkdir()
+            (templates / "main.tex").write_text("starter", encoding="utf-8")
+            (workspace / "main.tex").write_text("real cv", encoding="utf-8")
+            (workspace / "tailored.tex").write_text("starter", encoding="utf-8")
             (workspace / "job-description.txt").write_text("vacancy", encoding="utf-8")
 
-            destination = PREPARE.prepare_application(root, "example-engineer")
+            destination, status = PREPARE.prepare_tailored(root)
 
-            self.assertEqual("canonical", (destination / "main.tex").read_text())
-            self.assertEqual("canonical", (destination / "main.source.tex").read_text())
-            self.assertEqual("vacancy", (destination / "job-description.txt").read_text())
-            with self.assertRaises(FileExistsError):
-                PREPARE.prepare_application(root, "example-engineer")
+            self.assertEqual("refreshed untouched starter from main", status)
+            self.assertEqual("real cv", destination.read_text(encoding="utf-8"))
 
     def test_rejects_empty_job_description(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -389,7 +295,7 @@ class PrepareApplicationTests(unittest.TestCase):
             (workspace / "main.tex").write_text("canonical", encoding="utf-8")
             (workspace / "job-description.txt").write_text("", encoding="utf-8")
             with self.assertRaises(ValueError):
-                PREPARE.prepare_application(root, "example-engineer")
+                PREPARE.prepare_tailored(root)
 
 
 class SetupWorkspaceTests(unittest.TestCase):
@@ -430,12 +336,14 @@ class SetupWorkspaceTests(unittest.TestCase):
                 first["workspace/job-description.txt"],
             )
             self.assertEqual("created from template", first["workspace/context/"])
+            self.assertEqual("created from main", first["workspace/tailored.tex"])
             self.assertEqual("kept existing", second["workspace/main.tex"])
             self.assertEqual(
                 "kept existing",
                 second["workspace/job-description.txt"],
             )
             self.assertEqual("kept existing", second["workspace/context/"])
+            self.assertEqual("kept existing", second["workspace/tailored.tex"])
             self.assertEqual(
                 "private cv",
                 (workspace / "main.tex").read_text(encoding="utf-8"),
@@ -464,11 +372,16 @@ class SetupWorkspaceTests(unittest.TestCase):
                 results["workspace/job-description.txt"],
             )
             self.assertEqual("migrated legacy input", results["workspace/context/"])
+            self.assertEqual("created from main", results["workspace/tailored.tex"])
             self.assertEqual(
                 "legacy cv",
                 (root / "workspace" / "main.tex").read_text(encoding="utf-8"),
             )
             self.assertFalse((root / "main.tex").exists())
+            self.assertEqual(
+                "legacy cv",
+                (root / "workspace" / "tailored.tex").read_text(encoding="utf-8"),
+            )
 
     def test_fails_when_a_tracked_template_is_missing(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_directory:

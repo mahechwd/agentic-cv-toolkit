@@ -9,7 +9,7 @@ Fit selected bullets to the requested rendered space while preserving their stro
 
 ## Establish the target
 
-- Identify the exact CV path, kind (`experience` or `project`), and target name. Run `python3 scripts/cv_drafts.py list <cv-path>` and require one exact target.
+- Identify the exact CV path, kind (`experience` or `project`), and target name. Run `python3 scripts/cv_blocks.py list <cv-path>` and require one exact target.
 - Read [references/fitting-rules.md](references/fitting-rules.md) completely before editing.
 - Determine the requested mode:
   - `one-line`: each selected bullet must render on one line;
@@ -51,7 +51,7 @@ Fit selected bullets to the requested rendered space while preserving their stro
 
 ## Verify
 
-- Rerun `python3 scripts/cv_drafts.py list <cv-path>` and `python3 scripts/cv_tex.py <cv-path>` after editing. For `one-line`, also pass `--max-chars 112` to `cv_tex.py`.
+- Rerun `python3 scripts/cv_blocks.py list <cv-path>` and `python3 scripts/cv_tex.py <cv-path>` after editing. For `one-line`, also pass `--max-chars 112` to `cv_tex.py`.
 - Compile the edited CV into an operating-system temporary directory and inspect that rendered output. Do not create repository draft or preview files.
 - Verify that every selected bullet occupies no more than two rendered lines, then verify the requested line count and page limit for `page-fit`. For `balanced-lines`, also verify the whole block's ragged-right silhouette, line-count mix, final-line variation, and visual-density floor; character count alone cannot pass this mode.
 - Confirm the selected bullet count is unchanged, every bullet is non-empty, LaTeX is balanced, and no content outside the selected `\resumeItem{...}` bodies changed.
@@ -60,4 +60,4 @@ Fit selected bullets to the requested rendered space while preserving their stro
 
 ## Report
 
-List the CV path, target, mode, before/after bullets and visible character counts, facts deliberately preserved, facts removed as redundant context, evidence files actually used, final rendered line counts, the approximate final-line-fill pattern and average for `balanced-lines`, and page count when relevant. State that the named CV block was updated directly and can be revised again after the user reviews `workspace/main.tex`.
+List the CV path, target, mode, before/after bullets and visible character counts, facts deliberately preserved, facts removed as redundant context, evidence files actually used, final rendered line counts, the approximate final-line-fill pattern and average for `balanced-lines`, and page count when relevant. State that the named CV block was updated directly and can be revised again after the user reviews the named CV path.
