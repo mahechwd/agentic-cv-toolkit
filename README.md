@@ -148,7 +148,7 @@ Use $cv-tailor-bullets for experience "Example Company" against workspace/job-de
 
 The skill prepares `workspace/tailored.tex` when necessary, changes only its selected `\resumeItem{...}` bodies, and confirms `workspace/main.tex` remained byte-for-byte unchanged. Follow-up requests continue editing the same tailored CV.
 
-Only supported terms may be inserted. Unsupported job requirements are reported as gaps rather than added as claims. Tailoring preserves bullet count and rendered footprint; without a renderer, it uses a three-visible-character delta as a fallback estimate.
+Only supported terms may be inserted. The skill prioritises exact ATS-relevant terminology from the job description, but does not promise a particular ATS result. Unsupported requirements are reported as gaps rather than added as claims. By default, tailoring preserves rendered line count and uses a maximum three-visible-character delta when rendering is unavailable. Add “keep the length the same” to your request to activate exact-length mode, which requires a zero visible-character delta for every bullet.
 
 ## Score before and after tailoring
 
