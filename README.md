@@ -152,6 +152,8 @@ Only supported terms may be inserted. The skill prioritises exact ATS-relevant t
 
 ## Score before and after tailoring
 
+If you do not name a CV path, `$cv-score` scores non-empty `workspace/tailored.tex` first and falls back to `workspace/main.tex` when the tailored file is missing or empty. An explicitly named path always takes priority.
+
 Score the canonical CV:
 
 ```text

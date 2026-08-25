@@ -26,7 +26,7 @@
 - In `balanced-lines` mode, reject a uniformly sparse block: for at least three two-line bullets, target at least 60% average final-line fill and one ending around 75% or more. Expand only from current wording, explicit user facts, or context files the user explicitly authorised; otherwise do not modify the CV.
 - Preserve commands, bullet count, order, headings, dates, chronology, comments, whitespace outside the selected bullet bodies, and every unrelated byte of the CV.
 - Treat `workspace/main.tex` as canonical and `workspace/tailored.tex` as the only current job-specific copy.
-- Scoring is read-only and must not modify either CV.
+- Scoring is read-only and must not modify either CV. When the user does not name a CV path, `$cv-score` uses non-empty `workspace/tailored.tex` first and falls back to `workspace/main.tex` only when the tailored file is missing or empty. An explicitly named path always takes priority.
 
 ## Verification
 

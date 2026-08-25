@@ -9,7 +9,12 @@ Produce a candid, repeatable job-fit assessment without modifying any files.
 
 ## Select inputs
 
-- Use the CV path named by the user. Otherwise use canonical `workspace/main.tex` for a baseline score; use `workspace/tailored.tex` when the user asks to score the tailored CV.
+- If the user names a CV path, use that exact path and do not apply an automatic fallback.
+- If the user does not name a CV path, inspect the files without modifying them:
+  1. Use `workspace/tailored.tex` when it exists and contains non-whitespace content.
+  2. Otherwise fall back to `workspace/main.tex`.
+  3. Stop and report the missing input if the selected fallback is also missing or empty.
+- State which CV path was selected. When automatic fallback occurs, state that `workspace/tailored.tex` was empty or missing and `workspace/main.tex` was used instead.
 - Use the non-empty `workspace/job-description.txt` with either CV. Stop if the vacancy is empty or still contains placeholder text.
 - Read [references/scoring-rubric.md](references/scoring-rubric.md) completely before scoring.
 - Run `python3 scripts/cv_tex.py <cv-path> --json` so LaTeX commands do not distort semantic review or visible character counts.
@@ -36,4 +41,4 @@ Present:
 - **Interview Likelihood:** a reasoned range and low/medium/high label, with assumptions and confidence.
 - **Priority Improvements:** the smallest truthful changes most likely to improve the result.
 
-State that both scores and interview likelihood are heuristic estimates, not outputs from the employer's actual ATS or recruiting process. Do not edit the CV while scoring.
+State the CV path scored. State that both scores and interview likelihood are heuristic estimates, not outputs from the employer's actual ATS or recruiting process. Do not edit the CV while scoring.
