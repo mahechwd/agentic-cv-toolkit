@@ -1,4 +1,4 @@
 interface:
   display_name: "CV Tailor Bullets"
-  short_description: "Tailor supported ATS terms to one CV block"
-  default_prompt: "Use $cv-tailor-bullets to add supported ATS-relevant job-description terms to one named block in workspace/tailored.tex while preserving its footprint and leaving workspace/main.tex unchanged."
+  short_description: "Tailor from canonical evidence and job requirements"
+  default_prompt: "Use $cv-tailor-bullets to audit one named block in workspace/tailored.tex, compare its matching canonical evidence, and tailor it to workspace/job-description.txt without changing workspace/main.tex."

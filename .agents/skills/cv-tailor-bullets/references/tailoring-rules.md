@@ -1,5 +1,13 @@
 # Job-description tailoring rules
 
+## Evidence hierarchy and cross-file comparison
+
+- Audit the selected block in `workspace/tailored.tex` first. Preserve tailored wording that already communicates the strongest truthful and relevant achievement.
+- Then compare only the matching kind and exact target in `workspace/main.tex`. Use canonical bullets as additional candidate evidence, not as the preferred answer and never as permission to reset or overwrite tailored work wholesale.
+- Recover canonical metrics, mechanisms, scope, ownership, or achievements only when they strengthen job alignment or restore evidence weakened by earlier tailoring.
+- When the two files describe the same achievement differently, retain the strongest supported combination of impact, clarity, technical credibility, and job relevance. Do not merge incompatible causal claims.
+- Candidate evidence comes from the current tailored block, the matching canonical block, explicit user facts, and explicitly authorised context. The job description and company research describe employer needs; they never prove candidate experience.
+
 ## Truth before keyword coverage
 
 - Never add a technology, method, responsibility, ownership level, metric, or domain claim merely because it appears in the job description.
@@ -17,6 +25,15 @@
 - Ignore company slogans, generic personality adjectives, boilerplate benefits language, and repetition that adds no information.
 - Optimise for truthful keyword recognition and human readability; never promise a score, ranking, interview, or successful match in a company's private ATS.
 
+## Optional company research
+
+- Research the hiring company only when the user explicitly requests it. Ordinary tailoring relies on the supplied job description.
+- Prefer current first-party sources: the official vacancy, careers pages, product documentation or pages, engineering or security material, and the company's about page.
+- Extract only decision-useful context such as products, customers, domain vocabulary, engineering priorities, reliability or security concerns, and stated role expectations.
+- Use that context to rank already-supported candidate achievements and choose accurate vocabulary. Do not add company praise, marketing slogans, speculative strategy, or claims that the candidate worked at the company's scale.
+- Keep the job description primary for ATS terminology. Company research is secondary and should improve role context and hiring-manager relevance rather than displace explicit vacancy requirements.
+- Cite sources used and distinguish sourced facts from tailoring inferences.
+
 ## Natural relevance
 
 - Prioritise must-have requirements and core responsibilities over incidental repeated words.
@@ -24,6 +41,7 @@
 - Preserve the achievement and technical causal chain; do not turn bullets into keyword lists.
 - Prefer concrete nouns and industry-standard terms to vague synonyms.
 - Retain strong differentiating evidence even when the vacancy does not repeat it.
+- Treat the selected block as a portfolio: retain distinct high-signal evidence instead of spending every bullet on the same keyword or requirement.
 - Avoid copying long phrases or company marketing language verbatim.
 
 ## Bullet quality and footprint
