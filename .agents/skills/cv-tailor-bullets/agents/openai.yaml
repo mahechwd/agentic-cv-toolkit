@@ -1,4 +1,4 @@
 interface:
   display_name: "CV Tailor Bullets"
-  short_description: "Tailor from canonical evidence and job requirements"
-  default_prompt: "Use $cv-tailor-bullets to audit one named block in workspace/tailored.tex, compare its matching canonical evidence, and tailor it to workspace/job-description.txt without changing workspace/main.tex."
+  short_description: "Tailor evidence, ATS terms, and bold emphasis"
+  default_prompt: "Use $cv-tailor-bullets to audit one named block in workspace/tailored.tex, compare canonical evidence, tailor it to workspace/job-description.txt, and recheck its bold emphasis without changing workspace/main.tex."

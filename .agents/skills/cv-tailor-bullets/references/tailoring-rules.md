@@ -57,9 +57,21 @@
 - Rewrite surrounding supported prose only when it keeps the claim accurate and natural. Do not add filler, redundant modifiers, or awkward synonyms to meet either footprint constraint.
 - When keyword insertion conflicts with truth, readability, the active length constraint, or layout, leave that bullet unchanged and report the omitted term.
 
+## Post-tailoring emphasis
+
+- Finalise visible wording before revisiting bold emphasis. Use the post-rewrite wording as an immutable baseline for the emphasis pass.
+- Reassess every existing bold span; earlier emphasis may no longer match the tailored achievement or vacancy.
+- Prioritise meaningful outcomes or scale, differentiating mechanisms or capabilities, and central supported technologies that align with important job requirements. Company research may influence this ranking only when research mode was explicitly activated.
+- Keep emphasis sparse across the block. Do not enforce one span per bullet, and allow unbolded bullets when no anchor deserves emphasis.
+- Prefer the shortest cohesive span that remains meaningful. A metric plus its causal mechanism can form two useful anchors when both are independently important.
+- Do not bold opening verbs, generic soft skills, company names, marketing language, full clauses, every technology, or a keyword solely because it appears in the job description.
+- Bolding is for human scanning and does not create ATS evidence or permission to add a claim.
+- Add or remove only `\textbf{...}` wrappers during the emphasis pass. Visible wording, punctuation, order, whitespace-normalised text, and visible character counts must remain unchanged.
+- Bold glyphs can alter wrapping. Preserve line and page counts when rendering is available by removing lower-priority emphasis; otherwise report wrapping as unverified and let the user review it in Overleaf.
+
 ## Scope and LaTeX
 
 - Edit only the selected block in `workspace/tailored.tex`; never edit `workspace/main.tex`.
 - Preserve active bullet count, order, and all content outside selected `\resumeItem{...}` bodies.
 - Escape literal LaTeX-sensitive characters.
-- Do not add bold formatting during tailoring; use `$cv-bold-highlights` separately on `workspace/tailored.tex` when requested.
+- The post-tailoring emphasis pass may change only `\textbf{...}` wrappers after visible wording is final. `$cv-bold-highlights` remains available for standalone bold-only requests.

@@ -1,6 +1,6 @@
 ---
 name: cv-tailor-bullets
-description: Directly tailor one named Experience or Projects block in workspace/tailored.tex by auditing the current tailored version, comparing the matching canonical block for stronger evidence, and applying supported ATS-relevant job language. Optionally research the hiring company when explicitly requested. Preserves exact per-bullet length only when explicitly requested and never edits workspace/main.tex.
+description: Directly tailor one named Experience or Projects block in workspace/tailored.tex by auditing the current version, comparing canonical evidence, applying supported ATS-relevant job language, and rebalancing bold emphasis for the vacancy. Optionally research the hiring company when explicitly requested. Preserves exact per-bullet length only when explicitly requested and never edits workspace/main.tex.
 ---
 
 # CV tailor bullets
@@ -49,6 +49,21 @@ Create the current job-specific CV in `workspace/tailored.tex` while keeping `wo
 11. Preserve bullet count, order, rendered line count, headings, roles, dates, locations, comments, whitespace outside selected bullet bodies, and every unrelated byte.
 12. Do not create JSON drafts, preview TeX files, application folders, or a separate approval step.
 
+## Re-audit bold emphasis
+
+Run this pass only after the selected block's visible wording is final.
+
+1. Record the final visible text of every selected bullet, then inspect all existing `\textbf{...}` spans. Do not preserve a span merely because it was previously bold.
+2. Judge emphasis against the ranked job requirements and the bullet's actual accomplishment. When company-research mode is active, also use the verified company priorities as secondary context; otherwise use only the job description for company and role relevance.
+3. Keep, remove, move, or add `\textbf{...}` so the strongest scan anchors stand out, prioritising:
+   - a decision-relevant result, metric, or scale;
+   - a differentiating mechanism, architecture, or delivered capability;
+   - a supported technology, framework, or method central to a must-have responsibility; and
+   - concise external validation when genuinely differentiating.
+4. Apply emphasis across the block rather than enforcing one span per bullet. Keep it sparse, vary its placement naturally, and leave a bullet unbolded when it has no decision-relevant anchor. Do not bold action verbs, generic wording, company slogans, whole clauses, or every matching keyword.
+5. Treat bolding as a recruiter-scanning aid, not an ATS boost. The underlying supported wording creates keyword coverage; visual emphasis must not override stronger human-readable evidence.
+6. During this pass, add or remove only `\textbf{...}` wrappers inside the selected `\resumeItem{...}` bodies. The recorded final visible wording, punctuation, order, and character counts must remain identical.
+
 ## Verify and report
 
 - Rerun `python3 scripts/cv_blocks.py list workspace/tailored.tex`, `python3 scripts/cv_blocks.py list workspace/tailored.tex --json`, and `python3 scripts/cv_tex.py workspace/tailored.tex`.
@@ -58,5 +73,7 @@ Create the current job-specific CV in `workspace/tailored.tex` while keeping `wo
   - **Exact-length mode:** compare the selected target's before/after character arrays. Every corresponding delta must be exactly zero; a block average is not sufficient. Also preserve rendered line count when a renderer is available. Without one, report that exact character counts were verified but wrapping remains unverified.
 - Confirm every inserted ATS-relevant term is important to the job description, reads naturally, and is supported by current wording, an explicit user fact, or an authorised evidence file.
 - Compare before/after requirement coverage and confirm no stronger supported achievement, metric, ownership signal, or technical decision was lost merely to gain keyword coverage.
+- Compare every bullet's visible text immediately before and after the emphasis pass; it must be identical. Confirm each remaining bold span is important to the accomplishment and vacancy, not merely an exact keyword match.
+- When a renderer is available, confirm the post-emphasis block retains its verified line counts and the CV retains its page count; remove lower-priority emphasis if bold width creates a new wrap. Without a renderer, report post-emphasis wrapping as unverified and direct the user to review it in Overleaf without recommending a LaTeX installation.
 - Do not claim guaranteed performance in a company's private ATS.
-- Report the target, active footprint and company-research modes, tailored bullets retained, canonical evidence recovered, before/after bullets, exact supported terms added, supported terms omitted because they could not fit naturally, unsupported gaps omitted, requirement-coverage change, per-bullet character deltas, and rendering status. When research mode was used, cite the official sources and state how they affected prioritisation. In exact-length mode, all deltas must be `0`. State that `workspace/tailored.tex` was updated directly and `workspace/main.tex` was not modified.
+- Report the target, active footprint and company-research modes, tailored bullets retained, canonical evidence recovered, before/after bullets, exact supported terms added, supported terms omitted because they could not fit naturally, unsupported gaps omitted, requirement-coverage change, per-bullet character deltas, and rendering status. Also list bold spans kept, removed, moved, or added and why the final emphasis is relevant. When research mode was used, cite the official sources and state how they affected prioritisation and emphasis. In exact-length mode, all deltas must be `0`. State that `workspace/tailored.tex` was updated directly and `workspace/main.tex` was not modified.

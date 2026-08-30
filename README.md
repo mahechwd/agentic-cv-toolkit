@@ -93,7 +93,7 @@ git restore templates
 |---|---|---|
 | `$cv-build-bullets` | Create or strengthen truthful XYZ-style bullets | Direct edit to a named CV block |
 | `$cv-fit-bullets` | Fit and visually balance existing bullets | Direct edit with a strict two-rendered-line maximum |
-| `$cv-tailor-bullets` | Audit tailored bullets, recover stronger canonical evidence, and add supported job language | Direct edit to `workspace/tailored.tex` only |
+| `$cv-tailor-bullets` | Audit tailored bullets, recover canonical evidence, add supported job language, and recheck emphasis | Direct edit to `workspace/tailored.tex` only |
 | `$cv-bold-highlights` | Bold the most scan-worthy existing details | Direct formatting edit without changing visible wording |
 | `$cv-score` | Compare either CV with the vacancy | Read-only ATS and hiring-manager scores out of 100 |
 
@@ -146,7 +146,7 @@ Tailor one block directly in the separate job-specific CV:
 Use $cv-tailor-bullets for experience "Example Company" against workspace/job-description.txt.
 ```
 
-The skill prepares `workspace/tailored.tex` when necessary, audits its selected block first, and then compares the matching block in `workspace/main.tex` for stronger evidence that may have been lost during earlier tailoring. It changes only the selected tailored `\resumeItem{...}` bodies and confirms `workspace/main.tex` remained byte-for-byte unchanged. Follow-up requests continue editing the same tailored CV.
+The skill prepares `workspace/tailored.tex` when necessary, audits its selected block first, and then compares the matching block in `workspace/main.tex` for stronger evidence that may have been lost during earlier tailoring. After finalising the tailored wording, it rechecks existing bold spans and keeps, removes, moves, or adds sparse emphasis based on the accomplishment and vacancy without changing visible text. It changes only the selected tailored `\resumeItem{...}` bodies and confirms `workspace/main.tex` remained byte-for-byte unchanged. Follow-up requests continue editing the same tailored CV.
 
 Only supported terms may be inserted. The skill prioritises exact ATS-relevant terminology from the job description, but does not promise a particular ATS result. Unsupported requirements are reported as gaps rather than added as claims. By default, tailoring preserves rendered line count and uses a maximum three-visible-character delta when rendering is unavailable. Add “keep the length the same” to your request to activate exact-length mode, which requires a zero visible-character delta for every bullet.
 
