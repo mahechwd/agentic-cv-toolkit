@@ -25,6 +25,24 @@
 - Ignore company slogans, generic personality adjectives, boilerplate benefits language, and repetition that adds no information.
 - Optimise for truthful keyword recognition and human readability; never promise a score, ranking, interview, or successful match in a company's private ATS.
 
+## Requirement taxonomy and coverage ledger
+
+- Classify important vacancy language as hard skills or technologies; methodologies or engineering practices; responsibilities or behavioural signals; industry or domain terminology; and qualifications or certifications.
+- Separate must-haves, core responsibilities, and preferred requirements within those categories. Do not rank a repeated incidental word above a clearly stated requirement.
+- Maintain an in-memory ledger with: requirement priority, exact job-description phrase, truthful equivalent or variation, current CV location, candidate evidence, and action. Do not create a tracked or private draft file for this ledger.
+- Inspect all of `workspace/tailored.tex` read-only for placement. Count a term in Skills, another experience, or a project as existing textual coverage, while requiring achievement evidence before claiming applied experience.
+- Use term frequency only to identify absence, accidental duplication, or keyword stuffing. Never require a phrase to appear a fixed number of times or target a universal match percentage.
+- Prefer one natural, supported use of an exact employer term to repeated low-information mentions. Preserve a common acronym, expanded name, or clear equivalent when it improves comprehension or semantic matching.
+- Edit only the selected target even when the ledger identifies a better placement elsewhere; report that placement opportunity rather than expanding scope.
+
+## Role and domain lens
+
+- Infer the target role family and employer domain from the job description before choosing evidence. Useful role families may include backend, frontend, full-stack, platform or infrastructure, security, data or machine learning, mobile, and embedded engineering.
+- Give greater weight to accomplishments that solve the role's central problems, while retaining exceptional transferable achievements that demonstrate impact, ownership, scale, or engineering judgement.
+- For behavioural requirements, prefer concrete evidence such as coordinating delivery, influencing a decision, resolving ambiguity, mentoring, or working across teams. Do not replace evidence with generic soft-skill labels.
+- Treat certifications and qualifications as contextual requirements, not automatic experience-bullet keywords.
+- The lens prioritises supported evidence; it never supplies candidate facts.
+
 ## Optional company research
 
 - Research the hiring company only when the user explicitly requests it. Ordinary tailoring relies on the supplied job description.
@@ -42,6 +60,8 @@
 - Prefer concrete nouns and industry-standard terms to vague synonyms.
 - Retain strong differentiating evidence even when the vacancy does not repeat it.
 - Treat the selected block as a portfolio: retain distinct high-signal evidence instead of spending every bullet on the same keyword or requirement.
+- A newly inserted term must strengthen the achievement by clarifying what was delivered, how it was achieved, why it mattered, the candidate's ownership, or the relevant domain. Omit it when it only raises a keyword count.
+- Do not repeat a term in the selected target merely because it is absent from that block when the wider tailored CV already provides clear, appropriately placed coverage.
 - Avoid copying long phrases or company marketing language verbatim.
 
 ## Bullet quality and footprint
