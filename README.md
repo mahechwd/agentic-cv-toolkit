@@ -99,6 +99,8 @@ git restore templates
 
 There is no all-in-one skill, JSON review draft, application-folder workflow, or separate apply skill. Each producing skill updates its intended CV directly so the result can be reviewed in the `.tex` file or Overleaf.
 
+`$cv-score` and `$cv-tailor-bullets` share one requirement model in `.agents/references/cv-requirement-rules.md`, so must-haves, equivalents, unsupported gaps, placement, and role priorities remain consistent without merging read-only analysis and editing.
+
 ## Select one exact CV block
 
 List the Experience and Projects targets in either CV:
@@ -169,6 +171,24 @@ Use $cv-score to score workspace/tailored.tex against workspace/job-description.
 ```
 
 Both scores are heuristic assessments rather than output from an employer's private ATS.
+
+The score report includes a read-only **Tailoring Handoff** with each requirement's evidence, preferred wording, priority, affected rubric component, and exact experience or project target where one is appropriate. `$cv-tailor-bullets` may consume that handoff in the same conversation, but it revalidates every recommendation and remains usable without a prior score.
+
+For a comparable post-tailoring assessment, supply the earlier scorecard or keep the work in the same conversation:
+
+```text
+Use $cv-score to rescore workspace/tailored.tex against the same job description using the previous scorecard as the frozen baseline.
+```
+
+The rescore keeps the requirement set and rubric fixed, reports category deltas, and flags lost metrics, impact, ownership, technical depth, or differentiation even when the total score improves.
+
+Rendered PDF parsing remains opt-in because PDFs are private inputs. Explicitly request it when needed:
+
+```text
+Use $cv-score to score workspace/tailored.tex and run a rendered ATS parsing check.
+```
+
+When local rendering and text extraction are available, temporary output is checked for contact details, headings, employers, dates, bullets, and reading order. Otherwise the skill reports source-only parseability confidence without asking you to install LaTeX.
 
 ## Optional evidence
 

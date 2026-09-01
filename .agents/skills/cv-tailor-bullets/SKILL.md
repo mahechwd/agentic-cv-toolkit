@@ -18,48 +18,42 @@ Create the current job-specific CV in `workspace/tailored.tex` while keeping `wo
 ## Select the target and evidence
 
 1. Obtain an explicit kind (`experience` or `project`) and exact target name.
-2. Read [references/tailoring-rules.md](references/tailoring-rules.md) completely before editing.
+2. Read [../../references/cv-requirement-rules.md](../../references/cv-requirement-rules.md) completely, then read [references/tailoring-rules.md](references/tailoring-rules.md) completely before editing.
 3. Run `python3 scripts/cv_blocks.py list workspace/tailored.tex` and require one exact target.
 4. Read the whole job description and audit the selected tailored block before consulting its canonical counterpart. Identify achievements already worth retaining, weak or generic wording, missing supported requirements, duplicated signals, and any tailoring that weakened a strong fact.
 5. Run `python3 scripts/cv_blocks.py list workspace/main.tex` and inspect only the matching kind and exact target name when it exists. Treat it as a read-only evidence reservoir: identify stronger metrics, technical decisions, ownership, scale, or achievements that are absent or weakened in the tailored block. If no matching canonical target exists, continue from the tailored evidence and report that comparison was unavailable.
 6. Use the current tailored target, its matching canonical target, and explicit user facts as the default candidate-evidence set. Never assume canonical wording is stronger or replace the tailored block wholesale.
 7. Do not inspect `workspace/context/` unless the user explicitly authorises relevant files or the target folder. A folder request permits non-empty `.md` and `.txt` files only; read a PDF only when the user explicitly names it or asks to read PDFs.
-8. Infer the role and domain lens from the job description, such as backend, frontend, full-stack, platform or infrastructure, security, data or machine learning, mobile, embedded, or a domain such as fintech or healthcare. Use this lens to rank candidate evidence; never infer candidate experience from the role category.
-9. Build a structured job-requirement taxonomy:
-   - hard skills, technologies, platforms, and tools;
-   - methodologies, architecture, and engineering practices;
-   - responsibilities and behavioural signals such as ownership, collaboration, communication, or stakeholder work;
-   - industry and domain terminology; and
-   - qualifications or certifications.
-   Within each category, distinguish must-haves, core responsibilities, and preferred requirements.
-10. Run `python3 scripts/cv_tex.py workspace/tailored.tex --json` and inspect the rest of the tailored CV read-only. Build an in-memory coverage ledger for each important requirement with its priority, exact job-description phrase, truthful equivalent or variation, current location, supporting candidate evidence, and proposed action. Do not create a draft or edit any block other than the selected target.
-11. Classify each important requirement as exactly represented, represented by a clear equivalent, supported but absent, supported but underrepresented, or unsupported. A Skills-section term counts as textual coverage but does not prove it was used in a specific achievement.
-12. Rank supported ATS-relevant terms by job-description importance and role/domain relevance. Use repetition only to notice omission or noisy overuse; never apply keyword-frequency quotas. Ignore company slogans, generic filler, and unsupported terms.
-13. Select company-research mode:
+8. Apply the shared role/domain lens, requirement taxonomy, coverage statuses, and placement rules. Never infer candidate experience from the role category.
+9. Run `python3 scripts/cv_tex.py workspace/tailored.tex --json` and `python3 scripts/cv_blocks.py list workspace/tailored.tex --json`, then inspect the rest of the tailored CV read-only. Build the shared in-memory coverage ledger and do not create a draft or edit any block other than the selected target.
+10. If the user supplies a `$cv-score` scorecard or tailoring handoff for the same job description, use it as advisory input. Revalidate every item against the current job description, exact target list, and authorised candidate evidence; tailoring must not depend on a prior scorecard or trust it blindly.
+11. Rank supported ATS-relevant terms by job-description importance and role/domain relevance. Use repetition only to notice omission or noisy overuse; never apply keyword-frequency quotas. Ignore company slogans, generic filler, and unsupported terms.
+12. Select company-research mode:
    - **Default:** do not browse for company information.
    - **Research mode:** activate only when the user explicitly asks to research the company or employer. Use current official company sources first—such as the vacancy, careers, product, engineering, security, and about pages—and cite the sources used. If the hiring company cannot be identified confidently, ask rather than researching a similarly named organisation.
    - Use research only to prioritise already-supported achievements and understand product, customer, domain, or engineering concerns. Never use company material as evidence that the candidate has a skill or performed an achievement.
-14. Select the footprint mode before editing:
+13. Select the footprint mode before editing:
    - **Default mode:** use this unless the user explicitly asks to keep bullet lengths the same.
    - **Exact-length mode:** activate only when the user says, for example, “keep the length the same”, “same character count”, “exact length”, “fixed length”, or “zero delta”. Do not infer this mode merely from a request to preserve layout or keep bullets concise.
 
 ## Tailor directly
 
 1. Record the complete canonical CV before editing so any accidental change to it can be detected.
-2. Record the selected tailored block's bullet bodies, count, surrounding source, rendered line counts when available, and per-bullet visible character counts from `python3 scripts/cv_blocks.py list workspace/tailored.tex --json`.
+2. Record the selected tailored block's bullet bodies, count, surrounding source, rendered line counts when available, and per-bullet visible character counts from `python3 scripts/cv_blocks.py list workspace/tailored.tex --json`. For every bullet, also record its supported metric or scale, outcome, ownership signal, technical mechanism, domain fact, and differentiating purpose when present.
 3. Evaluate each existing tailored bullet against the requirement taxonomy, coverage ledger, role/domain lens, and combined evidence. Retain it unchanged when it is already the strongest truthful use of that slot.
 4. Rewrite only bullets that materially improve job relevance, requirement coverage, clarity, credibility, or scanability. Recover a fact or stronger framing from the matching canonical block only when it improves the tailored portfolio without losing a stronger current signal.
 5. Use only supported terminology. Prefer the job description's exact standard term at a natural, evidenced location when it is more recognisable than a weaker synonym. Retain or pair a clear equivalent, full name, or acronym when that improves human and semantic comprehension without awkward repetition.
 6. Do not force a requirement into the selected block merely because it is absent there. If the term is already clearly represented elsewhere in `workspace/tailored.tex`, add it to the selected bullet only when it materially clarifies that specific achievement or proves deeper use.
 7. Express behavioural requirements through evidence of action, scope, coordination, or outcome rather than generic adjectives such as “collaborative” or “excellent communicator”. Treat qualifications and certifications as bullet content only when they are genuinely part of the selected achievement.
-8. Apply the content-strength gate to every inserted term: it must clarify what was delivered, how it was achieved, why it mattered, the candidate's ownership, or the relevant domain. If it only increases keyword count, omit it.
+8. Apply the shared content-strength gate to every inserted term. If it only increases keyword count, omit it.
 9. Keep the selected block as a ranked portfolio of distinct evidence. Do not trade away a strong measured achievement merely to insert another keyword, and do not repeat the same requirement across bullets without distinct evidence.
-10. In default mode, preserve the rendered footprint using the original rules: retain every edited bullet's rendered line count, or keep its visible-character delta within three when rendering is unavailable.
-11. In exact-length mode, preserve each corresponding bullet's exact visible character count. Do not transfer character budget between bullets. Rewrite surrounding supported wording only when needed to fit a useful term naturally at zero character delta.
-12. In either mode, leave a bullet unchanged and report the omitted term when it cannot fit truthfully, naturally, and within the active footprint constraint. Never pad with filler or force an awkward synonym merely to satisfy length.
-13. Use `apply_patch` to replace only the inner contents of existing `\resumeItem{...}` commands in the selected block of `workspace/tailored.tex`.
-14. Preserve bullet count, order, rendered line count, headings, roles, dates, locations, comments, whitespace outside selected bullet bodies, and every unrelated byte.
-15. Do not create JSON drafts, preview TeX files, application folders, or a separate approval step.
+10. Compare every proposed bullet with its recorded signals. Reject a rewrite that loses a supported metric, scale, outcome, ownership signal, mechanism, domain fact, or differentiating purpose merely to gain terminology. Allow a deliberate trade only when it produces a clearly stronger truthful accomplishment for a higher-priority requirement, and report the trade.
+11. In default mode, preserve the rendered footprint using the original rules: retain every edited bullet's rendered line count, or keep its visible-character delta within three when rendering is unavailable.
+12. In exact-length mode, preserve each corresponding bullet's exact visible character count. Do not transfer character budget between bullets. Rewrite surrounding supported wording only when needed to fit a useful term naturally at zero character delta.
+13. In either mode, leave a bullet unchanged and report the omitted term when it cannot fit truthfully, naturally, and within the active footprint constraint. Never pad with filler or force an awkward synonym merely to satisfy length.
+14. Use `apply_patch` to replace only the inner contents of existing `\resumeItem{...}` commands in the selected block of `workspace/tailored.tex`.
+15. Preserve bullet count, order, rendered line count, headings, roles, dates, locations, comments, whitespace outside selected bullet bodies, and every unrelated byte.
+16. Do not create JSON drafts, preview TeX files, application folders, or a separate approval step.
 
 ## Re-audit bold emphasis
 
@@ -86,8 +80,8 @@ Run this pass only after the selected block's visible wording is final.
 - Confirm every inserted ATS-relevant term is important to the job description, reads naturally, and is supported by current wording, an explicit user fact, or an authorised evidence file.
 - Recheck the coverage ledger after editing. Confirm exact and equivalent coverage was recorded by location, no unrelated block was changed, and no term was duplicated in the selected block solely to increase frequency.
 - Confirm every new term passes the content-strength gate and that behavioural requirements are demonstrated rather than asserted.
-- Compare before/after requirement coverage and confirm no stronger supported achievement, metric, ownership signal, or technical decision was lost merely to gain keyword coverage.
+- Compare before/after requirement coverage and the recorded per-bullet signals. Confirm no stronger supported metric, scale, outcome, ownership signal, mechanism, domain fact, or differentiation was lost merely to gain keyword coverage.
 - Compare every bullet's visible text immediately before and after the emphasis pass; it must be identical. Confirm each remaining bold span is important to the accomplishment and vacancy, not merely an exact keyword match.
 - When a renderer is available, confirm the post-emphasis block retains its verified line counts and the CV retains its page count; remove lower-priority emphasis if bold width creates a new wrap. Without a renderer, report post-emphasis wrapping as unverified and direct the user to review it in Overleaf without recommending a LaTeX installation.
 - Do not claim guaranteed performance in a company's private ATS.
-- Report the target, role/domain lens, active footprint and company-research modes, tailored bullets retained, canonical evidence recovered, before/after bullets, exact terms added, equivalent or existing coverage retained elsewhere, supported terms omitted because they could not fit naturally, unsupported gaps omitted, requirement-coverage change, per-bullet character deltas, and rendering status. Also list bold spans kept, removed, moved, or added and why the final emphasis is relevant. When research mode was used, cite the official sources and state how they affected prioritisation and emphasis. In exact-length mode, all deltas must be `0`. State that `workspace/tailored.tex` was updated directly and `workspace/main.tex` was not modified.
+- Report the target, role/domain lens, active footprint and company-research modes, any supplied handoff items addressed or rejected, tailored bullets retained, canonical evidence recovered, before/after bullets, exact terms added, equivalent or existing coverage retained elsewhere, supported terms omitted because they could not fit naturally, unsupported gaps omitted, requirement-coverage change, content-signal preservation or deliberate trade, per-bullet character deltas, and rendering status. Also list bold spans kept, removed, moved, or added and why the final emphasis is relevant. When research mode was used, cite the official sources and state how they affected prioritisation and emphasis. In exact-length mode, all deltas must be `0`. State that `workspace/tailored.tex` was updated directly, `workspace/main.tex` was not modified, and formal rescoring remains the responsibility of `$cv-score`.

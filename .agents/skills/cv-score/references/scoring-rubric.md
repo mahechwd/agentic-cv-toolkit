@@ -33,14 +33,21 @@ Use integer component scores and show the arithmetic. Do not choose a final numb
 
 A score above 90 should be rare. Do not award points for repeated keywords without evidence or deduct twice for the same underlying weakness unless it independently affects two components.
 
-## Keyword classification
+## Shared requirement decisions
 
-- **Present:** explicit term or unambiguous equivalent appears in the CV.
-- **Supported but absent:** relevant evidence proves the skill or experience, but the CV omits it.
-- **Supported but underrepresented:** present once or weakly despite high job importance and broader evidence.
-- **Unsupported gap:** the vacancy requests it, but neither CV nor relevant evidence supports the claim.
+Use the priority, category, coverage, evidence, placement, role-lens, and frozen-comparison definitions in `../../../references/cv-requirement-rules.md`. Do not introduce a separate keyword taxonomy or frequency target in the scoring rubric.
 
-Rank by must-have status, prominence in responsibilities, and semantic importance—not raw repetition alone.
+## Content regressions
+
+- A keyword gain does not offset the loss of a stronger supported metric, outcome, ownership signal, mechanism, domain fact, or differentiating achievement.
+- Charge a genuine loss to the component it weakens, such as evidence quality, demonstrated impact, technical depth, ownership, or skimmability. Do not deduct twice when one regression affects two descriptions of the same underlying weakness.
+- On a comparable rescore, identify regressions separately even when the total score rises.
+
+## Parseability confidence
+
+- Source-only review can assess conventional structure and extractable LaTeX text but cannot prove the submitted PDF's reading order.
+- Award high parseability confidence only when an explicitly authorised or locally generated PDF was text-extracted and its critical content and order were verified.
+- Treat a skipped rendered check as an evidence limitation, not an automatic formatting failure.
 
 ## Interview likelihood
 

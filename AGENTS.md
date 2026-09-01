@@ -26,7 +26,10 @@
 - In `balanced-lines` mode, reject a uniformly sparse block: for at least three two-line bullets, target at least 60% average final-line fill and one ending around 75% or more. Expand only from current wording, explicit user facts, or context files the user explicitly authorised; otherwise do not modify the CV.
 - Preserve commands, bullet count, order, headings, dates, chronology, comments, whitespace outside the selected bullet bodies, and every unrelated byte of the CV.
 - Treat `workspace/main.tex` as canonical and `workspace/tailored.tex` as the only current job-specific copy.
-- Scoring is read-only and must not modify either CV. When the user does not name a CV path, `$cv-score` uses non-empty `workspace/tailored.tex` first and falls back to `workspace/main.tex` only when the tailored file is missing or empty. An explicitly named path always takes priority.
+- `$cv-score` and `$cv-tailor-bullets` must both read `.agents/references/cv-requirement-rules.md` and use its requirement priorities, categories, coverage statuses, placement rules, role lenses, and frozen-comparison rules.
+- Scoring is read-only and must not modify either CV. When the user does not name a CV path, `$cv-score` uses non-empty `workspace/tailored.tex` first and falls back to `workspace/main.tex` only when the tailored file is missing or empty. An explicitly named path always takes priority. Its output must include an actionable tailoring handoff with exact targets when available. Comparable rescoring must freeze the supplied baseline's requirements, rubric, and evidence interpretation and disclose content regressions.
+- A scorecard or handoff supplied to `$cv-tailor-bullets` is advisory and must be revalidated against current files and authorised evidence. Tailoring never scores its own edits; use `$cv-score` for the post-edit assessment.
+- Rendered ATS/PDF parsing checks are opt-in. Run one only when the user explicitly asks to inspect PDFs, requests a rendered parsing check, or names the exact PDF; use temporary output, never install dependencies solely for the check, and never write its artefacts into the repository.
 
 ## Verification
 
