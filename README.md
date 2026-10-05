@@ -152,6 +152,8 @@ The skill prepares `workspace/tailored.tex` when necessary, audits its selected 
 
 Only supported terms may be inserted. The skill prioritises exact ATS-relevant terminology from the job description, but does not promise a particular ATS result. Unsupported requirements are reported as gaps rather than added as claims. By default, tailoring preserves rendered line count and uses a maximum three-visible-character delta when rendering is unavailable. Add “keep the length the same” to your request to activate exact-length mode, which requires a zero visible-character delta for every bullet.
 
+Every wording or bolding change must resolve an identifiable gap or defect, or fulfil a specific instruction. Follow-up tailoring keeps satisfactory wording and emphasis, favours the current version when alternatives are equally effective, and reports the block as unchanged when no useful edit passes the evidence and footprint constraints. Repeating the request alone is not a reason to rewrite it.
+
 Company research is optional rather than automatic. Add “research the company” to the request to use current official company sources as secondary context for prioritising supported achievements; research never becomes evidence of candidate experience.
 
 ## Score before and after tailoring

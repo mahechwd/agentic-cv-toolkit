@@ -53,6 +53,24 @@
 - Do not repeat a term in the selected target merely because it is absent from that block when the wider tailored CV already provides clear, appropriately placed coverage.
 - Avoid copying long phrases or company marketing language verbatim.
 
+## Change acceptance and stopping rule
+
+Audit for a concrete defect before generating alternative wording or emphasis. A repeat invocation, a different attractive synonym, or a general desire to make the CV stronger is not by itself a defect.
+
+An eligible change must resolve an identifiable issue such as:
+
+- **Supported coverage gap:** a material requirement is supported but absent or underrepresented at the right location. Existing exact or clear equivalent coverage is sufficient unless its current expression has a specific ambiguity or placement weakness; exact-term substitution alone does not prove improvement.
+- **Clarity defect:** the current clause obscures the accomplishment, referent, ownership, or causal relationship. Identify what a reader cannot understand and how the replacement resolves it; preferring another equally clear verb is insufficient.
+- **Evidence loss:** the matching canonical block or other authorised evidence contains a stronger relevant metric, mechanism, outcome, scope, or ownership signal that the current bullet has lost or weakened.
+- **Redundancy or emphasis defect:** repeated wording adds no distinct evidence, an existing highlight obscures stronger evidence or creates visual noise, or a useful supported scanning anchor is missing. Explain the specific problem rather than rotating acceptable bold spans.
+- **Explicit user direction:** the user requests a particular supported correction or presentation change. Follow that instruction within the existing evidence, scope, and footprint constraints; do not use this gate to ignore a specific request.
+
+For each proposed edit, record the current defect, its requirement or evidence basis, and the benefit the final version must deliver. Keep this decision record in memory; do not create a draft or persisted handoff. The replacement must also pass the existing truth, signal-preservation, placement, and footprint rules. An eligible reason does not excuse a weaker accomplishment or an unsupported claim.
+
+Resolve ties in favour of the current wording and emphasis. When a defect needs correction, prefer the smallest change that fixes it while retaining the strongest existing signals. Do not generate stylistic variants for satisfactory bullets or change unrelated phrases merely because another part of the bullet needs editing.
+
+Stop when no eligible wording or emphasis defect remains that can be resolved under the active constraints. Report unresolved unsupported requirements or terms that cannot fit, and leave the selected block unchanged when no candidate passes. Repeating tailoring with the same evidence and vacancy should preserve satisfactory output rather than manufacture another revision. This rule reduces discretionary rewriting; it does not make model judgement mathematically deterministic.
+
 ## Bullet quality and footprint
 
 - Start with an accurate action verb and keep each bullet focused on one primary achievement.
@@ -69,7 +87,7 @@
 ## Post-tailoring emphasis
 
 - Finalise visible wording before revisiting bold emphasis. Use the post-rewrite wording as an immutable baseline for the emphasis pass.
-- Reassess every existing bold span; earlier emphasis may no longer match the tailored achievement or vacancy.
+- Reassess every existing bold span; earlier emphasis may no longer match the tailored achievement or vacancy. Apply the change acceptance gate and preserve suitable emphasis when alternatives have comparable value.
 - Compare plausible emphasis spans using four questions: does this evidence strengthen the hiring case; does it demonstrate a must-have or core responsibility; is it specific enough to distinguish the achievement; and will emphasis make its value easier to recognise during a quick scan? Use qualitative judgement rather than points or keyword-match counts.
 - Favour outcomes or meaningful scale, differentiating mechanisms or capabilities, and central supported technologies. When two spans have similar hiring value, prefer the one more relevant to the JD. Do not let a routine matching tool name displace an exceptional result or transferable accomplishment simply because the JD names that tool. Company research may influence selection only when research mode was explicitly activated.
 - Usually zero to two short spans per bullet provide enough emphasis. This is neither a required count nor a hard maximum: an additional span must expose distinct, important evidence while leaving the sentence mostly visually quiet. Allow unbolded bullets and natural variation across the block; do not alternate counts mechanically.
