@@ -14,7 +14,7 @@ Produce a candid, repeatable job-fit assessment without modifying any files.
   1. Use `workspace/tailored.tex` when it exists and contains non-whitespace content.
   2. Otherwise fall back to `workspace/main.tex`.
   3. Stop and report the missing input if the selected fallback is also missing or empty.
-- State which CV path was selected. When automatic fallback occurs, state that `workspace/tailored.tex` was empty or missing and `workspace/main.tex` was used instead.
+- State which CV path was selected. When automatic fallback occurs, state whether `workspace/tailored.tex` was missing or empty, as actually observed, and that `workspace/main.tex` was used instead.
 - Use the non-empty `workspace/job-description.txt` with either CV. Stop if the vacancy is empty or still contains placeholder text.
 - Read [../../references/cv-requirement-rules.md](../../references/cv-requirement-rules.md) completely, then read [references/scoring-rubric.md](references/scoring-rubric.md) completely before scoring.
 - Run `python3 scripts/cv_tex.py <cv-path> --json` so LaTeX commands do not distort semantic review or visible character counts.
@@ -38,6 +38,8 @@ Produce a candid, repeatable job-fit assessment without modifying any files.
 - Do not write generated PDFs, extracted text, or parsing reports into the repository.
 
 ## Output
+
+Begin every report with **Scored CV:** and a link to the actual selected CV path, before presenting either score. When main was selected automatically, immediately add **Fallback reason:** and state whether `workspace/tailored.tex` was missing or empty. An explicitly requested main CV is a user-selected source, not a fallback.
 
 Present:
 
