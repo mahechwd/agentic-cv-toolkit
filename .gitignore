@@ -1,17 +1,6 @@
-# Keep the entire personal working area local only. It contains the canonical
-# CV, current vacancy, and any supporting evidence.
-workspace/
+# Personal CVs, job descriptions, and supporting documents.
+/workspace/
 
-# Previous private locations remain ignored so updating users cannot
-# accidentally commit them before running the workspace migration.
-/main.tex
-/job-description.txt
-/cv-context/
-
-# Keep outputs from older toolkit versions private if they still exist locally.
-/applications/
-/drafts/
-
-# Ignore local Python bytecode produced by validation helpers.
+# Python bytecode.
 __pycache__/
 *.pyc

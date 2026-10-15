@@ -1,4 +1,0 @@
-interface:
-  display_name: "CV Bold Highlights"
-  short_description: "Bold key details directly in a LaTeX CV"
-  default_prompt: "Use $cv-bold-highlights to add sparse bold highlights directly to one named experience or project in workspace/main.tex."

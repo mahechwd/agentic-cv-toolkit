@@ -1,4 +1,0 @@
-interface:
-  display_name: "CV Fit Bullets"
-  short_description: "Fit bullets directly in a LaTeX CV block"
-  default_prompt: "Use $cv-fit-bullets to fit one named experience or project directly in workspace/main.tex."

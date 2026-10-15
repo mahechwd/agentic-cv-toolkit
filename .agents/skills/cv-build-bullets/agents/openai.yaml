@@ -1,4 +1,0 @@
-interface:
-  display_name: "CV Build Bullets"
-  short_description: "Write recruiter-readable, technically credible bullets"
-  default_prompt: "Use $cv-build-bullets to curate recruiter-readable XYZ bullets with distinct signals, plain-English impact first, selective technical depth, a 220-character ceiling, and no minimum length."
