@@ -24,7 +24,9 @@ The user must specify targets before tailoring or researching the vacancy. If sc
 - “Tailor Wise.”
 - “Tailor the Experience section.”
 
-An entry target selects that experience or project only. A section target selects its entries. One request can select multiple entries, multiple sections, or a combination, such as “Tailor Wise and Projects.” Resolve ambiguous names before proceeding. Overlapping targets must not cause repeated edits.
+An entry target selects that experience or project only. A section target selects its entries. One request can select multiple entries, multiple sections, or a combination, such as “Tailor Wise and Projects.” Resolve missing or ambiguous targets with the user before editing. Overlapping targets must not cause repeated edits.
+
+If any selected entry contains an empty bullet slot, including mixed filled and empty slots, report the affected entry and direct the user to cv-build. Stop the entire request without editing the destination. Check this before research or preparing edits.
 
 ## Source and output behaviour
 
@@ -39,7 +41,7 @@ For every selected target, begin with its original content in `main.tex`, even i
 | Same JD; repeat target | Tailor the target afresh from `main.tex`, replacing its previous tailored version. |
 | Changed JD | Automatically initialise a fresh copy from `main.tex`, tailor the requested targets, and report the reset. Do not ask for reset confirmation. |
 
-The changed-JD reset intentionally replaces previous tailoring throughout the copy. Otherwise, preserve content outside selected targets. Track the JD associated with the tailored output privately; the mechanism and treatment of whitespace-only changes still need definition.
+The changed-JD reset intentionally replaces previous tailoring throughout the copy. Otherwise, preserve content outside selected targets. Track the JD associated with the tailored output privately; the storage mechanism remains to be defined. Compare JD text after trimming surrounding whitespace and collapsing consecutive whitespace to one space. Whitespace-only differences preserve existing tailoring; other text changes trigger the reset. Preserve the original JD for interpretation.
 
 ## Allowed edits
 
@@ -63,7 +65,7 @@ Research relevant hiring priorities online as part of tailoring. Prioritise the 
 
 Use research to prioritise supported evidence and emphasis. It must not override explicit JD requirements or create candidate claims. Cite research sources in the final report and distinguish inference from stated employer requirements. Do not publish private CV content or use it in public search queries.
 
-Research depth, recency handling, and behaviour when sources are unavailable remain implementation decisions.
+If research is unavailable, continue with the JD and report the limitation. Research depth and recency handling remain implementation decisions.
 
 ## Rendered layout requirements
 
@@ -88,7 +90,7 @@ Use a local LaTeX compiler to render the complete candidate CV, with its origina
 
 Compile all selected changes together per revision round. Measure line count and final-line fullness from the resulting PDF, then inspect rendered entry images for overall balance. Successful compilation alone does not prove that layout passes.
 
-Use a private temporary candidate and outputs. Apply only verified changes to the destination. If compilation or mandatory layout verification cannot be completed, report the blocking issue and leave the existing destination intact, including when a JD reset was planned. The exact validation and write mechanisms remain to be designed.
+Use a private temporary candidate and outputs. Apply only verified changes to the destination. If compilation or mandatory layout verification cannot be completed, report the blocking issue and leave the existing destination intact, including when a JD reset was planned. Allow at most three failed layout-verification rounds per request, evaluating all selected changes together each round. After the third failure, stop, preserve the destination, and report the remaining issues. The exact validation and write mechanisms remain to be designed.
 
 Compiler installation is a setup dependency. Routine compilation time must be measured against actual templates; do not promise a fixed duration. Reuse an available compiler and keep compilation rounds focused.
 
@@ -130,8 +132,8 @@ Run the repository test suite after script changes. Document supported template 
 - Supported command and section variations in modified Jake's Resume templates.
 - Parser output, target identity, source-change checks, and safe replacement interface.
 - Behaviour when main.tex and an existing tailored.tex differ structurally.
-- JD-change detection, whitespace-only edits, and missing prior JD state.
+- JD-state storage and missing prior JD state.
 - Compiler provisioning, environment matching, and PDF-to-bullet mapping.
-- Quantitative diagnostics and bounded revision behaviour for layout balancing.
-- Handling empty bullets, missing supported outcomes, or unresolvable template structures.
-- Research failure handling and source selection limits.
+- Quantitative diagnostics for layout balancing.
+- Handling missing supported outcomes or unresolvable template structures.
+- Research source selection limits.
