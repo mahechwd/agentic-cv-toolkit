@@ -101,6 +101,28 @@ Line and column positions support diagnostics. Byte spans support exact edits. A
 
 Locations belong only to the source snapshot identified by their hash. Revalidate the destination immediately before writing; reject stale edits rather than applying old offsets. After a successful edit, invalidate the old destination cache and regenerate it before another read or edit. Never transfer main.tex offsets to tailored.tex.
 
+## Source-reading API
+
+`scripts/cv_source.py` provides an immutable `SourceSnapshot`:
+
+```python
+from scripts.cv_source import SourceSnapshot
+
+source = SourceSnapshot.read("workspace/main.tex")
+source.sha256                    # Hash of the original bytes
+source.text                      # UTF-8 text with original newlines
+source.raw                       # Unmodified bytes
+source.span_from_characters(0, 5) # Scanner offsets to JSON-ready locations
+```
+
+`byte_offset(character_offset)` and `character_offset(byte_offset)` translate between decoded-string and original-byte boundaries. `position(byte_offset)` returns a one-based line/column; `span(start_byte, end_byte)` returns the contract's half-open range. `slice_text(start_byte, end_byte)` extracts exact source content. Empty spans and the end-of-file boundary are valid.
+
+Negative, reversed, out-of-bounds, and mid-UTF-8-character ranges are rejected. Invalid UTF-8 raises `SourceEncodingError` with code `invalid_utf8`, the path, and offending byte range, without including private source text. File access errors propagate; no cache or fallback is consulted by this layer.
+
+LF, CRLF, and standalone CR count as line breaks. Within a CRLF pair, the boundary after CR remains on the preceding line; the next line starts after LF. Tabs and combining characters each count as one code point. A UTF-8 BOM is preserved as U+FEFF and contributes to source offsets; any treatment as non-visible content belongs to extraction.
+
+A snapshot never changes when the on-disk file changes. Callers must read a fresh snapshot to compare hashes before reusing source locations. This layer does not parse LaTeX, cache results, or modify source files.
+
 ## Cache layout
 
 Store derived data under the already ignored workspace directory:
