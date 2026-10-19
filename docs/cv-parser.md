@@ -12,6 +12,10 @@ Read the selected CV source, initially `workspace/main.tex`. Extract all visible
 
 Do not read context documents, execute LaTeX, or fetch hyperlink destinations during source parsing. Compile separately for mandatory rendered layout verification.
 
+## Output contract
+
+The version 1 fields, node types, and synthetic reference outputs are defined in [cv-parser-output.md](cv-parser-output.md).
+
 ## Readable view
 
 Produce plain text in source reading order:
@@ -157,7 +161,7 @@ Rendered line limits and visual balance require the separate compiler workflow; 
 
 ## Implementation decisions still to resolve
 
-- Public parser interface and detailed section/entry schema and identifiers.
+- Public parser interface; the version 1 output schema is defined in cv-parser-output.md.
 - Supported macro variants and how to validate their definitions.
 - Additional symbol/math support and unknown-command diagnostics.
 - Handling included source files or user macros that contribute visible content.
