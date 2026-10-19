@@ -123,6 +123,20 @@ LF, CRLF, and standalone CR count as line breaks. Within a CRLF pair, the bounda
 
 A snapshot never changes when the on-disk file changes. Callers must read a fresh snapshot to compare hashes before reusing source locations. This layer does not parse LaTeX, cache results, or modify source files.
 
+## LaTeX structure API
+
+`scripts/cv_latex.py` exposes `scan_latex(snapshot)`, returning an immutable tuple of `LatexNode` objects. Node kinds are `command`, `control_symbol`, `group`, `comment`, `whitespace`, `math_delimiter`, and `text`.
+
+Each node records exact start/end byte offsets. `raw(snapshot)` and `span(snapshot)` recover its original text and line/column locations. Group nodes additionally hold ordered children and a body span excluding the braces, including zero-width empty bodies. Concatenating top-level raw nodes reconstructs the complete input byte-for-byte; group children reconstruct their body. Nodes must be used with the snapshot from which they were scanned.
+
+Commands contain an ASCII-letter control word without the backslash. Backslash followed by a non-letter becomes a control symbol; escaped braces, percent signs, and dollar signs do not act as structural delimiters. Comments include their terminating LF, CRLF, or CR, if present. They are retained as opaque nodes, so later extraction can omit them without injecting an extra newline. Whitespace following a comment is retained separately for later TeX whitespace interpretation.
+
+Commands and following brace groups remain siblings: this scanner does not guess argument ownership. Stars and square brackets remain text until a command-aware layer interprets them. Dollar delimiters are recorded without interpreting or validating mathematical expressions. Macro definitions in the preamble remain syntax; the extraction layer must distinguish them from document content.
+
+Unbalanced groups, trailing backslashes, and excessive nesting raise `LatexSyntaxError` with a stable code, path, and source span. The scanner uses an explicit stack with a default maximum group depth of 128. It rejects known lexical mode changes (`verb`, `catcode`, `makeatletter`, `ExplSyntaxOn`). Unknown ordinary commands are preserved, not silently discarded.
+
+This is a bounded CV syntax scanner, not a TeX interpreter. Environment validation, verbatim-like environment rejection, conditional processing policy, macro signatures, optional arguments, and visible-text interpretation belong to command-aware extraction. A successful scan alone does not certify a document as supported or safe to edit. No LaTeX execution or source mutation occurs.
+
 ## Cache layout
 
 Store derived data under the already ignored workspace directory:
