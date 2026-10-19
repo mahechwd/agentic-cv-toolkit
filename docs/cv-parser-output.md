@@ -8,7 +8,7 @@ The executable contract fixtures are entirely fictional:
 - [Readable output](../tests/fixtures/parser/expected.txt)
 - [Structured output](../tests/fixtures/parser/expected.json)
 
-These are expected outputs for future parser implementation, not outputs from a parser that already exists. The source hash and locations are calculated from the exact fixture bytes. The example uses `/synthetic/workspace/main.tex` as an intentionally fictional absolute path; real output uses the resolved input path. Tests of a future parser substitute only this path when comparing its output with the expected fixture.
+These independently authored expected outputs are compared with actual parser output in regression tests. The source hash and locations are calculated from the exact fixture bytes. The example uses `/synthetic/workspace/main.tex` as an intentionally fictional absolute path; real output uses the resolved input path. Tests of a future parser substitute only this path when comparing its output with the expected fixture.
 
 ## Envelope
 
@@ -88,8 +88,8 @@ No font widths, rendered line counts, or PDF coordinates belong in this extracti
 
 A diagnostic has `code` (stable string), `severity` (`warning` or `error`), `message` (human-readable string), and `span` (source span or null when unavailable). A successful envelope may contain warnings only if all visible content and boundaries are still faithfully represented. Empty slots are valid data, not extraction errors.
 
-Malformed syntax, unsupported visible commands, or uncertain extraction produce a failure with diagnostics. A failure has no successful readable CV and must not replace a valid cache with partial data. The CLI error transport will be defined with the public interface.
+Malformed syntax, unsupported visible commands, or uncertain extraction produce a failure with diagnostics. A failure has no successful readable CV and must not replace a valid cache with partial data. The CLI emits one JSON error diagnostic on stderr and exits with code 1; it emits no partial CV on stdout.
 
 ## Verification for this task
 
-Contract tests verify fixture SHA-256, exact raw source slices, Unicode-aware positions, nested span containment, unique IDs, empty slots, and equality of JSON readable text with the text file. These tests validate the authored contract, not parser behaviour. Future parser tests must compare actual output against these independently authored expectations.
+Contract tests verify fixture SHA-256, exact raw source slices, Unicode-aware positions, nested span containment, unique IDs, empty slots, and equality of JSON readable text with the text file. These tests validate the authored contract, not parser behaviour. Readable-extraction tests compare actual output against these independently authored expectations.

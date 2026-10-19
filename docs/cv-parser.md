@@ -137,6 +137,20 @@ Unbalanced groups, trailing backslashes, and excessive nesting raise `LatexSynta
 
 This is a bounded CV syntax scanner, not a TeX interpreter. Environment validation, verbatim-like environment rejection, conditional processing policy, macro signatures, optional arguments, and visible-text interpretation belong to command-aware extraction. A successful scan alone does not certify a document as supported or safe to edit. No LaTeX execution or source mutation occurs.
 
+## Structural extraction API
+
+`scripts/cv_structure.py` exposes `extract_structure(snapshot)`. It returns a `StructureResult` with source path/hash, ordered header content, and ordered sections. This is an intermediate representation: heading fields and bullet bodies have exact raw LaTeX and source spans, but readable `text` fields are added in the next extraction stage. It must not be published as a completed cache envelope.
+
+The extractor recognises section commands, four-argument resumeSubheading entries, two-argument resumeProjectHeading entries, two-argument resumeSubSubheading child entries, resumeItem slots, and resumeLine supporting text. Argument groups may contain nested formatting and may be separated by whitespace or comments. Empty arguments and bullets remain present. Section and entry spans follow the output contract.
+
+Entries are assigned source-order IDs (`s1.e1`, `s1.e2`); child roles have nested IDs such as `s1.e1.e1`. Repeated labels are never deduplicated. A subordinate heading attaches to the most recent top-level entry in the current section; a new section clears this relationship. This stage does not resolve user-supplied names or select between duplicates.
+
+Document markers must form one begin/end pair. Macro definitions and sample commands inside preamble groups are excluded from entry discovery. The extractor checks list wrappers and supported `center`, `itemize`, and `enumerate` environments for balanced, properly nested boundaries. Other body environments, includes, conditional commands, and body macro definitions are rejected with source-located diagnostics. Starred/optional structural command variants are not yet supported and fail explicitly.
+
+Uninterpreted visible content is retained in intermediate `raw` nodes with source spans, rather than dropped. Structural commands nested inside an opaque content group are rejected instead of being guessed as entries. Unsupported ordinary commands retained here must be resolved or rejected by the readable-text stage. The readable-text layer validates supported structural macro signatures and layout bodies before producing the completed output; structural extraction alone does not perform arbitrary macro expansion or certify edits.
+
+Tests compare the reference fixture's entry structures against its independently authored contract, excluding only readable text. Additional cases cover duplicate labels, parent/child roles, empty sections and slots, comments, nested formatting, and invalid structural boundaries.
+
 ## Cache layout
 
 Store derived data under the already ignored workspace directory:
@@ -149,9 +163,9 @@ workspace/.cache/cv/
 └── tailored.txt
 ```
 
-Create each pair only when its source is parsed. `main.json` and `tailored.json` contain structured extraction, source metadata, diagnostics, and the full readable text. The corresponding `.txt` file is a convenience view generated from that JSON for AI reading; it is never an independent authority. A missing or altered text view is regenerated from validated JSON.
+Create each pair only when its source is parsed. `main.json` and `tailored.json` contain structured extraction, source metadata, diagnostics, the full readable text, and a cache-only `cache_sha256` checksum. The corresponding `.txt` file is a convenience view generated from that JSON for AI reading; it is never an independent authority. A missing or altered text view is regenerated from validated JSON.
 
-The JSON envelope contains:
+The public JSON envelope contains:
 
 - `schema_version`: integer version of the saved data contract.
 - `parser_version`: explicit version of extraction and interpretation behaviour.
@@ -160,6 +174,8 @@ The JSON envelope contains:
 - `readable_text`: the full plain-text view.
 - `sections`: ordered structural data and source locations.
 - `diagnostics`: extraction issues; failed or incomplete extraction is not a valid successful cache.
+
+The on-disk `cache_sha256` hashes canonical JSON (sorted keys, compact separators, UTF-8) excluding the checksum itself. It detects accidental payload corruption, not malicious tampering. It is removed from the public parser result. Cached nodes are also checked for schema shape, source slices, unique IDs, ordered containment, and readable-view consistency.
 
 Main and tailored records are independent. Their identifiers are unique within a source snapshot and are not durable cross-file matching keys.
 
@@ -195,9 +211,22 @@ Use synthetic fixtures to verify:
 
 Rendered line limits and visual balance require the separate compiler workflow; parsing success does not establish PDF correctness.
 
-## Implementation decisions still to resolve
+## Readable extraction and supported scope
 
-- Public parser interface; the version 1 output schema is defined in cv-parser-output.md.
-- Supported macro variants and how to validate their definitions.
-- Additional symbol/math support and unknown-command diagnostics.
-- Handling included source files or user macros that contribute visible content.
+`scripts/cv_text.py` exposes `parse_cv(snapshot)`, returning the complete version 1 contract. It adds readable text to the structural representation, preserves empty bullet slots, converts supported symbols, and rejects unknown visible commands with located diagnostics. The original reference JSON and text fixtures remain unchanged and are compared against actual output in tests.
+
+Supported content includes nested bold/italic/emphasis/underline and basic font wrappers, heading fields, resumeLine, hyperlink labels, literal URLs, escaped punctuation, common sizing declarations, line breaks, and the inline symbols used by the template. Comments and control-word delimiter whitespace are interpreted without injecting words or spaces. Complex mathematics, custom visible macros, starred structural headings, optional heading arguments, included document bodies, and arbitrary environments are not supported.
+
+Structural macro definitions may use supported font wrappers, item/list and tabular layout, spacing, and their parameters once in order. Reordered, missing, duplicated, or literal-injecting definitions are rejected. This is a bounded template reader, not a TeX interpreter: it does not resolve packages or execute preamble code. A declaration's physical alignment and wrapping remain the compiler's responsibility.
+
+Raw header/section content is converted to text nodes; top-level explicit line breaks create separate nodes. A formatting group containing multiple lines remains one text node with embedded newlines and a span covering the group. This retains an exact source correspondence without inventing overlapping wrapper spans.
+
+## Cache API
+
+`scripts/cv_cache.py` exposes `load_cv(path, use_cache=True)`, returning the public record, a `hit`/`rebuilt`/`disabled` status, and any cache-write warnings. The caller always consumes the current returned record, never reads a text view blindly. Missing/deleted/invalid source fails without returning stale cached results. Source bytes are checked again before and after publishing cache files.
+
+Caching is restricted to `workspace/main.tex` and `workspace/tailored.tex`. Other paths require no-cache mode. Cache directory/file symlinks are rejected. Writes use temporary files with owner-only permissions followed by atomic replacement; interrupted text-view writes are repaired on the next call. Concurrent source modification raises an error and requires a retry. Consumers must still validate source hashes immediately before later edits.
+
+## Public interface
+
+See [cv-parser-usage.md](cv-parser-usage.md) for commands, exit behaviour, and examples. Both commands are read-only with respect to source CV files. No editing, tailoring, compiler integration, or context-document ingestion is implemented by this parser.
