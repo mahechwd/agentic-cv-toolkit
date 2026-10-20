@@ -1,0 +1,34 @@
+% Fictional fixture. Content and contacts are synthetic.
+\documentclass{article}
+\usepackage{hyperref}
+\newcommand{\resumeSubheading}[4]{\textbf{#1}\hfill#2\\\textit{#3}\hfill#4}
+\newcommand{\resumeProjectHeading}[2]{#1\hfill#2}
+\newcommand{\resumeItem}[1]{\item #1}
+\newcommand{\resumeLine}[1]{#1}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}}
+\begin{document}
+\begin{center}
+\textbf{Alex Rivera}\\
+\href{mailto:alex@example.com}{alex@example.com} $|$ Sample City
+\end{center}
+\section{Education}
+\resumeSubheading{Example University}{2022 -- 2026}{BSc Computer Science}{Sample City}
+\resumeLine{Relevant Modules: Databases \& Algorithms}
+\section{Experience}
+\resumeSubheading{Engineering Intern}{Jun -- Aug 2025}{Example Labs}{Remote}
+\resumeItemListStart
+\resumeItem{Reduced the team’s retry failures by \textbf{25\%}
+using bounded retries.}
+% \resumeItem{Commented content must not be extracted.}
+\resumeItem{}
+\resumeItemListEnd
+\section{Projects}
+\resumeProjectHeading{\textbf{Queue Demo} $|$ \emph{Python, SQL}}{}
+\resumeItemListStart
+\resumeItem{Built a queue simulator with \textbf{\emph{replay controls}}.}
+\resumeItemListEnd
+\section{Technical Skills}
+\textbf{Languages}: Python, SQL\\
+\textbf{Tools}: Git
+\end{document}

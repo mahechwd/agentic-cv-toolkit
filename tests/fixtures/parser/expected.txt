@@ -1,0 +1,25 @@
+Alex Rivera
+alex@example.com | Sample City
+
+EDUCATION
+
+Example University 2022 – 2026
+BSc Computer Science Sample City
+Relevant Modules: Databases & Algorithms
+
+EXPERIENCE
+
+Engineering Intern Jun – Aug 2025
+Example Labs Remote
+• Reduced the team’s retry failures by 25% using bounded retries.
+•
+
+PROJECTS
+
+Queue Demo | Python, SQL
+• Built a queue simulator with replay controls.
+
+TECHNICAL SKILLS
+
+Languages: Python, SQL
+Tools: Git
