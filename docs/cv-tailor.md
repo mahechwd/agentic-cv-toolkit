@@ -4,7 +4,7 @@
 
 Tailor selected CV entries or sections to a job description as closely as supported candidate facts allow. Preserve factual accuracy, recruiter readability, technical credibility, and the user's layout.
 
-The `codex/cv-tailor` branch contains this skill and the supporting components necessary to deliver it, including source parsing, constrained editing, job-description state tracking, and LaTeX compilation and rendered verification. Other skills are outside this branch's scope. Integrate an existing LaTeX compiler; do not build a new typesetting engine.
+The `refactor/skill-tailor` branch contains this skill and the supporting components necessary to deliver it, including source parsing, constrained editing, job-description state tracking, and LaTeX compilation and rendered verification. Other skills are outside this branch's scope. Integrate an existing LaTeX compiler; do not build a new typesetting engine.
 
 This document describes agreed behaviour and is updated as decisions evolve. It is not an implementation status report. Technical mechanisms not yet selected are listed separately at the end.
 
@@ -41,11 +41,11 @@ For every selected target, begin with its original content in `main.tex`, even i
 | Same JD; repeat target | Tailor the target afresh from `main.tex`, replacing its previous tailored version. |
 | Changed JD | Automatically initialise a fresh copy from `main.tex`, tailor the requested targets, and report the reset. Do not ask for reset confirmation. |
 
-The changed-JD reset intentionally replaces previous tailoring throughout the copy. Otherwise, preserve content outside selected targets. Track the JD associated with the tailored output privately; the storage mechanism remains to be defined. Compare JD text after trimming surrounding whitespace and collapsing consecutive whitespace to one space. Whitespace-only differences preserve existing tailoring; other text changes trigger the reset. Preserve the original JD for interpretation.
+The changed-JD reset intentionally replaces previous tailoring throughout the copy. Otherwise, preserve content outside selected targets. Track the normalised JD fingerprint and output-content fingerprint in a versioned LaTeX comment at the start of the private tailored output. Publish this metadata and CV together with one atomic file replacement. Check the JD and existing metadata before other tailoring work. A missing or empty JD, or missing/corrupt/inconsistent metadata on a non-empty existing tailored copy, must be reported before proceeding. Missing metadata is normal when there is no existing tailored output. A valid fingerprint differing from the current JD is a changed-JD reset, not corrupt state. Compare JD text after trimming surrounding whitespace and collapsing consecutive whitespace to one space. Whitespace-only differences preserve existing tailoring; other text changes trigger the reset. Preserve the original JD for interpretation.
 
 ## Allowed edits
 
-Change only the contents of existing `\resumeItem{...}` commands in selected targets. Preserve bullet count, bullet order, headings, dates, and surrounding source. Never move accomplishments between entries or attribute one role's experience to another.
+Normally change only the contents of existing `\resumeItem{...}` commands in selected targets. When a selected entry has a different bullet count in current `main.tex`, synchronise its bullet slots automatically to the canonical count and order before tailoring; do not ask for confirmation. This is an explicit exception to destination bullet-count preservation. Preserve unselected entries. If entry correspondence or a structural replacement cannot be established reliably, report the unsupported structure and leave the destination intact. Preserve bullet count, bullet order, headings, dates, and surrounding source. Never move accomplishments between entries or attribute one role's experience to another.
 
 Within selected bullet bodies, bold emphasis may be added, removed, or moved using `\textbf{...}`. Emphasise important supported accomplishments, results, or relevant technical details sparsely. Measure layout after final emphasis is applied.
 
@@ -94,6 +94,10 @@ Use a private temporary candidate and outputs. Apply only verified changes to th
 
 Compiler installation is a setup dependency. Routine compilation time must be measured against actual templates; do not promise a fixed duration. Reuse an available compiler and keep compilation rounds focused.
 
+## No-change behaviour
+
+If the complete candidate including its JD association equals the existing destination, report unchanged and skip compilation/publication. Restoring canonical wording, synchronising bullet slots, or resetting for a changed JD is an output change and still requires rendered verification.
+
 ## Unsupported requirements and final report
 
 Complete supported tailoring even when some JD requirements lack candidate evidence. Report unsupported gaps at the end rather than interrupting to ask about each one. The user may provide additional facts in a follow-up request.
@@ -137,3 +141,9 @@ Run the repository test suite after script changes. Document supported template 
 - Quantitative diagnostics for layout balancing.
 - Handling missing supported outcomes or unresolvable template structures.
 - Research source selection limits.
+
+## Implementation choices
+
+Generated bullet text is validated for balanced braces, escaped special characters, and an allowlist of formatting commands, then the complete candidate is reparsed. Original unchanged formatting remains supported by the parser. Publication reconstructs the allowed candidate and compares exact bytes before writing.
+
+Rendered verification may use agent-reviewed PDF coordinates and rendered images. Record line count, final-line fullness, mapping confidence, and entry balance against the exact candidate and PDF hashes. Do not claim automated PDF-to-bullet mapping or verified Overleaf equivalence without evidence. Missing rendering or ambiguous mapping blocks publication.
