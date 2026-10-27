@@ -1,0 +1,3 @@
+interface:
+  display_name: "CV Tailor"
+  short_description: "Tailor CV entries to a job description"
