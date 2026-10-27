@@ -263,6 +263,9 @@ def publish(session, review):
         if (compilation['candidate_sha256'] != digest(raw) or
                 compilation['pdf_sha256'] != digest(pdf.read_bytes())):
             raise ValueError('Compilation is stale')
+        for name, expected_hash in compilation.get('dependencies', {}).items():
+            if digest(Path(name).read_bytes()) != expected_hash:
+                raise ValueError('Compiler dependency changed after rendering')
         if review.get('candidate_sha256') != digest(raw) or review.get('pdf_sha256') != compilation['pdf_sha256']:
             raise ValueError('Review is stale')
         expected = set(manifest['replacements'])
